@@ -14,10 +14,11 @@ import {
 } from "@mui/material";
 
 import { ColumnContainer } from "../components";
-import profileImage from "../assets/Profile_Image.jpg";
 import { GetUserResponse } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
 import { getUserDetails } from "../api/authenication";
+
+const profileImage = `${process.env.PUBLIC_URL}/image/Profile_Image.jpg`;
 
 const Settings: React.FC = () => {
   const [fNameEdit, setFNameEdit] = useState(true);

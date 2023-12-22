@@ -16,9 +16,6 @@ import {
   VisibilityOff,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import cookIQLogo from "../assets/CookIQ_Logo_Text.png";
-import googleLogo from "../assets/googleLogo.png";
-import loginBackground from "../assets/loginPageBackground.jpg";
 import { LoginResponse } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
 import { login } from "../api/authenication";
@@ -27,6 +24,10 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { postUser, getUser } from "../api/user";
 import { User } from "../types/UserResponse";
+
+const cookIQLogo = `${process.env.PUBLIC_URL}/image/CookIQ_Logo_Text.png`;
+const googleLogo = `${process.env.PUBLIC_URL}/image/googleLogo.png`;
+const backgroundImage = `${process.env.PUBLIC_URL}/image/loginPageBackground.jpg`;
 
 function Credentials(props: any) {
   return (
@@ -256,7 +257,7 @@ const LoginPage: React.FC = () => {
           }}
         >
           <img
-            src={loginBackground}
+            src={backgroundImage}
             alt="Login Meal"
             style={{ width: "100%", height: "auto" }}
           />

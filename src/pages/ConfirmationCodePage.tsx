@@ -9,7 +9,7 @@ import {
 import { ApiResponse } from "../types/utils";
 import { ColumnContainer } from "../components";
 import { resendConfirmationCode, confirmation } from "../api/authenication";
-import cookIQLogo from "../assets/CookIQ_Logo_Text.png";
+const cookIQLogo = `${process.env.PUBLIC_URL}/image/CookIQ_Logo_Text.png`;
 
 const ConfirmationCodePage: React.FC = () => {
   const [confirmationCode, setConfirmationCode] = useState<string[]>(

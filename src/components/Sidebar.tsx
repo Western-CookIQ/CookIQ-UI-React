@@ -16,7 +16,7 @@ import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 
 import { useNavigate } from "react-router-dom";
-import profileImage from "../assets/Profile_Image.jpg";
+const profileImage = `${process.env.PUBLIC_URL}/image/Profile_Image.jpg`;
 
 const icons = [
   AssignmentOutlinedIcon,
