@@ -4,7 +4,7 @@
  */
 
 // to access env variables, add more paths if required
-require("dotenv").config({ path: "./server/.env" });
+require("dotenv").config({ path: "./src/.env" });
 
 /** @type {import('jest').Config} */
 const config = {
@@ -21,15 +21,6 @@ const config = {
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: ["<rootDir>/node_modules/"],
-
-  // define test projects
-  projects: [
-    {
-      displayName: "Server",
-      testEnvironment: "node",
-      testMatch: ["<rootDir>/server/__test__/**/*.test.js"],
-    },
-  ],
 };
 
 module.exports = config;
