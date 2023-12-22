@@ -2,10 +2,10 @@ import { Box, Button, TextField, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { ColumnContainer } from "../components";
-import cookIQLogo from "../assets/CookIQ_Logo_Text.png";
 import { ForgotPasswordResponse } from "../types/AuthResponses";
 import { forgotPassword } from "../api/authenication";
 import { ApiResponse } from "../types/utils";
+const cookIQLogo = `${process.env.PUBLIC_URL}/image/CookIQ_Logo_Text.png`;
 
 const ForgotPasswordPage: React.FC = () => {
   const navigate = useNavigate();

@@ -11,11 +11,11 @@ import {
 import { RegisterResponse } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
 import { useNavigate } from "react-router-dom";
-import cookIQLogo from "../assets/CookIQ_Logo_Text.png";
 import { ColumnContainer, PasswordField } from "../components";
 import { Link } from "react-router-dom";
 
 import { register } from "../api/authenication";
+const cookIQLogo = `${process.env.PUBLIC_URL}/image/CookIQ_Logo_Text.png`;
 
 function Credentials(props: any) {
   return (
