@@ -1,9 +1,9 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
 import { MealCard } from "../components";
 import { useEffect, useState } from "react";
-import { getRatedMeals } from "../api/meal";
+// import { getRatedMeals } from "../api/meal";
 import { getRecipeDetails } from "../api/recipe";
-import { RecipeRatingResponse } from "../types/MealResponses";
+// import { RecipeRatingResponse } from "../types/MealResponses";
 import { ApiResponse } from "../types/utils";
 import { RecipeDetailsResponse } from "../types/RecipeResponses";
 
@@ -15,8 +15,8 @@ const RecommendationPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       // get all meals which are rated
-      const ratedRecipes: ApiResponse<RecipeRatingResponse[]> =
-        await getRatedMeals(localStorage.getItem("UserSub") as string);
+      // const ratedRecipes: ApiResponse<RecipeRatingResponse[]> =
+      //   await getRatedMeals(localStorage.getItem("UserSub") as string);
 
       // TODO: MAKE REQUEST TO MODEL HERE!
 
@@ -71,7 +71,7 @@ const RecommendationPage: React.FC = () => {
               sx={{
                 height: "250px",
                 width: "100%",
-                display: active !== -1 && active != index ? "none" : "block",
+                display: active !== -1 && active !== index ? "none" : "block",
               }}
             >
               <MealCard

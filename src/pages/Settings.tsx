@@ -26,8 +26,8 @@ const Settings: React.FC = () => {
   const [passwordEdit, setPasswordEdit] = useState(true);
   const [fName, setFName] = useState("");
   const [lName, setLName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
 
   const handleFNameChange = () => {
     if (!fNameEdit) {
