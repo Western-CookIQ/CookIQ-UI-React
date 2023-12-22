@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, Typography, Button, Rating } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { getRecipePreview } from "../api/recipe";
+// import { getRecipePreview } from "../api/recipe";
 
 //https://mui.com/material-ui/material-icons/
 
@@ -12,9 +12,9 @@ interface Recipe {
   description: string;
 }
 
-interface RatingInputProps {
-  onChange: (value: number) => void;
-}
+// interface RatingInputProps {
+//   onChange: (value: number) => void;
+// }
 
 const recipes: Recipe[] = [
   {
@@ -44,7 +44,7 @@ const recipes: Recipe[] = [
   },
 ];
 
-const PREFIXED_MEALS_ID = [486261, 486641, 495271, 501408, 493413];
+// const PREFIXED_MEALS_ID = [486261, 486641, 495271, 501408, 493413];
 //mexican stack up
 //moist delicious banana nut bread
 //spinach and cheese stuffed chicken breast
@@ -53,9 +53,9 @@ const PREFIXED_MEALS_ID = [486261, 486641, 495271, 501408, 493413];
 
 const InitialRecipeReview: React.FC = () => {
   const [scrollIndex, setScrollIndex] = useState(0);
-  const [recipeDetails, setRecipeDetails] = useState([]);
+  // const [recipeDetails, setRecipeDetails] = useState([]);
   const [ratings, setRatings] = useState<{ [key: number]: number }>({});
-  const userSub = localStorage.getItem("UserSub"); //userID in Cognito and DB
+  // const userSub = localStorage.getItem("UserSub"); //userID in Cognito and DB
 
   useEffect(() => {
     //call get request for recipes
