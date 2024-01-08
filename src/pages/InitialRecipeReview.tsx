@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, Typography, Button, Rating } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-// import { getRecipePreview } from "../api/recipe";
+import { getRecipeDetails } from "../api/recipe"; //All recipe details
 
 //https://mui.com/material-ui/material-icons/
 
@@ -11,6 +11,8 @@ interface Recipe {
   name: string;
   description: string;
 }
+
+const recipeIds = [486261, 486641, 495271, 501408, 493413];
 
 // interface RatingInputProps {
 //   onChange: (value: number) => void;
