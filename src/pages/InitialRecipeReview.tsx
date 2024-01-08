@@ -151,7 +151,7 @@ const InitialRecipeReview: React.FC = () => {
           <ArrowForwardIosIcon />
         </Button>
         <Button
-          href="/#"
+          href="/Recommendations"
           style={{
             backgroundColor: "#6AB089", // Blue color
             color: "#fff", // White text
