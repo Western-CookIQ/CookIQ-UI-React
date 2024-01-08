@@ -3,6 +3,9 @@ import { Card, CardContent, Typography, Button, Rating } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { getRecipeDetails } from "../api/recipe"; //All recipe details
+import { ApiResponse } from "../types/utils";
+import { RecipeDetailsResponse } from "../types/RecipeResponses";
+
 
 //https://mui.com/material-ui/material-icons/
 
@@ -12,7 +15,7 @@ interface Recipe {
   description: string;
 }
 
-const recipeIds = [486261, 486641, 495271, 501408, 493413];
+const recipeIds = [486261, 486641, 495271, 501408, 493413]; //Static
 
 // interface RatingInputProps {
 //   onChange: (value: number) => void;
@@ -55,12 +58,54 @@ const recipes: Recipe[] = [
 
 const InitialRecipeReview: React.FC = () => {
   const [scrollIndex, setScrollIndex] = useState(0);
-  // const [recipeDetails, setRecipeDetails] = useState([]);
+  const [recipes, setRecipes] = useState<RecipeDetailsResponse[]>([]);
   const [ratings, setRatings] = useState<{ [key: number]: number }>({});
   // const userSub = localStorage.getItem("UserSub"); //userID in Cognito and DB
 
   useEffect(() => {
-    //call get request for recipes
+  //   const fetchRecipes = async () => {
+  //     try {
+  //       const recipesData = await Promise.all(
+  //         recipeIds.map(async (recipeId) => {
+  //           const response = await fetch(`/api/recipe/${recipeId}`);
+  //           const recipeData = await response.json();
+  //           return {
+  //             id: recipeData.id,
+  //             name: recipeData.name,
+  //             description: recipeData.description,
+  //           };
+  //         })
+  //       );
+  //       setRecipeDetails(recipesData);
+  //     } catch (error) {
+  //       console.error("Error fetching recipes:", error);
+  //     }
+  //   };
+
+  //   fetchRecipes();
+  // }, []);
+
+  const fetchData = async () => {
+    // get all meals which are rated
+    // const ratedRecipes: ApiResponse<RecipeRatingResponse[]> =
+    //   await getRatedMeals(localStorage.getItem("UserSub") as string);
+
+    // TODO: MAKE REQUEST TO MODEL HERE!
+
+    // Sort based on highest rating
+    const recommendedRecipesDetailsResponse: ApiResponse<RecipeDetailsResponse>[] =
+      await Promise.all(
+        recipeIds.map((recipeId) => getRecipeDetails(recipeId))
+      );
+
+    const recipeDetailsArray: RecipeDetailsResponse[] =
+      recommendedRecipesDetailsResponse
+        .filter((response) => response.data !== undefined) // Filter out responses with no data
+        .map((response) => response.data!); // Use ! to assert that data is present (after filtering)
+
+    setRecipes(recipeDetailsArray);
+    };
+    fetchData();
   }, []);
 
   const handleNext = () => {
