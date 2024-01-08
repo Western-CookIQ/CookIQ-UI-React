@@ -74,7 +74,7 @@ const InitialRecipeReview: React.FC = () => {
 
   return (
     <div style={{ position: "relative", width: "100%", overflow: "hidden" }}>
-      <Typography component="h1" variant="h6" sx={{ textAlign: "left" }}>
+      <Typography component="h1" variant="h6" sx={{ textAlign: "left",  fontWeight: 'bold', color: '#6AB089'}}>
         Before getting started, rate your first five meals!
       </Typography>
       <div
@@ -116,7 +116,13 @@ const InitialRecipeReview: React.FC = () => {
                 />
               </div>
             </CardContent>
-            <div style={{ flex: 1, background: "#f0f0f0" }}>{"picture"}</div>
+            <div style={{ flex: 1, background: "#f0f0f0" }}>
+            <img
+                src="https://www.eatingwell.com/thmb/v86G1ptq0Tk_3CDPTvpKdh2Pi7g=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/57831531-73819d8ce8f5413cac42cf1c907bc37a.jpg"
+                alt=""
+                style={{ width: "auto", height: "auto" }}
+              />
+            </div>
           </Card>
         ))}
       </div>
