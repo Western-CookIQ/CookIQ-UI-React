@@ -17,12 +17,19 @@ interface Recipe {
 
 const recipeIds = [486261, 486641, 495271, 501408, 493413]; //Static
 
+function toProperCase(input: string): string {
+  return input
+    .toLowerCase()
+    .replace(/(?:^|\s)\w/g, (match) => match.toUpperCase());
+}
+
 // const PREFIXED_MEALS_ID = [486261, 486641, 495271, 501408, 493413];
 //mexican stack up
 //moist delicious banana nut bread
 //spinach and cheese stuffed chicken breast
 //2 ingredients eggs banana pancakes
 //loaded potato and buffalo chicken casserole
+
 
 const InitialRecipeReview: React.FC = () => {
   const [scrollIndex, setScrollIndex] = useState(0);
@@ -94,7 +101,7 @@ const InitialRecipeReview: React.FC = () => {
               style={{ flex: 1, display: "flex", flexDirection: "column" }}
             >
               <div>
-                <Typography variant="h5">{recipe.name}</Typography>
+                <Typography variant="h5">{toProperCase(recipe.name)}</Typography>
                 <Typography>{recipe.description}</Typography>
               </div>
               <div style={{ marginTop: "auto", fontSize: "2em" }}>
