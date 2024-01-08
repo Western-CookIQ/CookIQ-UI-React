@@ -17,38 +17,6 @@ interface Recipe {
 
 const recipeIds = [486261, 486641, 495271, 501408, 493413]; //Static
 
-// interface RatingInputProps {
-//   onChange: (value: number) => void;
-// }
-
-const recipes: Recipe[] = [
-  {
-    id: 1,
-    name: "Recipe 1",
-    description: "This is the description for Recipe 1.",
-  },
-  {
-    id: 2,
-    name: "Recipe 2",
-    description: "This is the description for Recipe 2.",
-  },
-  {
-    id: 3,
-    name: "Recipe 3",
-    description: "This is the description for Recipe 3.",
-  },
-  {
-    id: 4,
-    name: "Recipe 4",
-    description: "This is the description for Recipe 4.",
-  },
-  {
-    id: 5,
-    name: "Recipe 5",
-    description: "This is the description for Recipe 5.",
-  },
-];
-
 // const PREFIXED_MEALS_ID = [486261, 486641, 495271, 501408, 493413];
 //mexican stack up
 //moist delicious banana nut bread
@@ -63,36 +31,8 @@ const InitialRecipeReview: React.FC = () => {
   // const userSub = localStorage.getItem("UserSub"); //userID in Cognito and DB
 
   useEffect(() => {
-  //   const fetchRecipes = async () => {
-  //     try {
-  //       const recipesData = await Promise.all(
-  //         recipeIds.map(async (recipeId) => {
-  //           const response = await fetch(`/api/recipe/${recipeId}`);
-  //           const recipeData = await response.json();
-  //           return {
-  //             id: recipeData.id,
-  //             name: recipeData.name,
-  //             description: recipeData.description,
-  //           };
-  //         })
-  //       );
-  //       setRecipeDetails(recipesData);
-  //     } catch (error) {
-  //       console.error("Error fetching recipes:", error);
-  //     }
-  //   };
-
-  //   fetchRecipes();
-  // }, []);
-
   const fetchData = async () => {
-    // get all meals which are rated
-    // const ratedRecipes: ApiResponse<RecipeRatingResponse[]> =
-    //   await getRatedMeals(localStorage.getItem("UserSub") as string);
-
-    // TODO: MAKE REQUEST TO MODEL HERE!
-
-    // Sort based on highest rating
+    // get initial review recipe details
     const recommendedRecipesDetailsResponse: ApiResponse<RecipeDetailsResponse>[] =
       await Promise.all(
         recipeIds.map((recipeId) => getRecipeDetails(recipeId))
