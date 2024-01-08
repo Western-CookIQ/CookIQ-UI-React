@@ -120,7 +120,7 @@ const InitialRecipeReview: React.FC = () => {
             <img
                 src="https://www.eatingwell.com/thmb/v86G1ptq0Tk_3CDPTvpKdh2Pi7g=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/57831531-73819d8ce8f5413cac42cf1c907bc37a.jpg"
                 alt=""
-                style={{ width: "auto", height: "auto" }}
+                style={{ width: "auto", height: "40vw" }}
               />
             </div>
           </Card>
