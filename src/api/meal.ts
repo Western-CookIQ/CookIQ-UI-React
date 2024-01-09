@@ -17,3 +17,30 @@ export const getRatedMeals = async (
     };
   }
 };
+
+
+// Post a meal rating by the user
+export const postMealRating = async (
+  userSub: string,
+  recipeId: number,
+  isBookmarked: boolean,
+  rating: number,
+  isCooked: boolean
+): Promise<ApiResponse<RecipeRatingResponse[]>> => {
+  try {
+    const postData = {
+      recipe_id: recipeId,
+      user_id: userSub,
+      is_bookmarked: isBookmarked,
+      rating: rating,
+      is_cooked: isCooked,
+    };
+    const res = await protectedAxios.post(`${url}/api/meal`, postData);
+    return { data: res.data };
+  } catch (error: unknown) {
+    return {
+      error:
+        error instanceof Error ? error.message : "Unable to register user.",
+    };
+  }
+};

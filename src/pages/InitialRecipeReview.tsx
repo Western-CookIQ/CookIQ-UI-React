@@ -3,9 +3,9 @@ import { Card, CardContent, Typography, Button, Rating } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { getRecipeDetails } from "../api/recipe"; //All recipe details
+import { postMealRating } from "../api/meal";
 import { ApiResponse } from "../types/utils";
 import { RecipeDetailsResponse } from "../types/RecipeResponses";
-
 
 //https://mui.com/material-ui/material-icons/
 
@@ -30,6 +30,8 @@ const InitialRecipeReview: React.FC = () => {
   const [recipes, setRecipes] = useState<RecipeDetailsResponse[]>([]);
   const [ratings, setRatings] = useState<{ [key: number]: number }>({});
   // const userSub = localStorage.getItem("UserSub"); //userID in Cognito and DB
+  //const [completed, setCompleted] = useState(false); //Has the user completed onboarding?
+
 
   useEffect(() => {
   const fetchData = async () => {
@@ -64,6 +66,18 @@ const InitialRecipeReview: React.FC = () => {
       ...prevRatings,
       [recipeId]: value !== null ? value : 3.5, //default to 3.5 when user does not make selection
     }));
+  };
+
+  const handleDone = async () => {
+    let UserSub = localStorage.getItem("UserSub") as string
+    // Iterate through recipes and post ratings
+    for (const recipe of recipes) {
+      const ratingValue = ratings[recipe.id] || 3.5; // Default to 3.5 if not rated
+      await postMealRating(UserSub, recipe.id, false, ratingValue, false); //post the meal with its rating, id, and related user
+    }
+
+    // Set a flag to indicate completion
+    //setCompleted(true);
   };
 
   return (
@@ -144,8 +158,8 @@ const InitialRecipeReview: React.FC = () => {
         >
           <ArrowForwardIosIcon />
         </Button>
-        <Button
-          href="/Recommendations"
+        <Button onClick={handleDone}
+          href="/recommendations"
           style={{
             backgroundColor: "#6AB089", // Blue color
             color: "#fff", // White text
