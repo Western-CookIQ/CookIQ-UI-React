@@ -9,12 +9,6 @@ import { RecipeDetailsResponse } from "../types/RecipeResponses";
 
 //https://mui.com/material-ui/material-icons/
 
-interface Recipe {
-  id: number;
-  name: string;
-  description: string;
-}
-
 const recipeIds = [486261, 486641, 495271, 501408, 493413]; //Static
 
 function toProperCase(input: string): string {
