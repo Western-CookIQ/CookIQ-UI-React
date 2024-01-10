@@ -1,11 +1,13 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
 import { MealCard } from "../components";
 import { useEffect, useState } from "react";
-// import { getRatedMeals } from "../api/meal";
+import { getRatedMeals } from "../api/meal";
 import { getRecipeDetails } from "../api/recipe";
-// import { RecipeRatingResponse } from "../types/MealResponses";
+import { RecipeRatingResponse } from "../types/MealResponses";
 import { ApiResponse } from "../types/utils";
 import { RecipeDetailsResponse } from "../types/RecipeResponses";
+import { getContentBasedRecommendations } from "../api/recommendations";
+import { ContentBasedRecommedationsResponse } from "../types/RecommendationsReponses";
 
 const RecommendationPage: React.FC = () => {
   const [active, setActive] = useState(-1);
@@ -14,17 +16,24 @@ const RecommendationPage: React.FC = () => {
   // RECOMMENDATION CALL
   useEffect(() => {
     const fetchData = async () => {
-      // get all meals which are rated
-      // const ratedRecipes: ApiResponse<RecipeRatingResponse[]> =
-      //   await getRatedMeals(localStorage.getItem("UserSub") as string);
+      // get all meals which are rated for the user
+      const ratedRecipes: ApiResponse<RecipeRatingResponse[]> =
+        await getRatedMeals(localStorage.getItem("UserSub") as string);
 
-      // TODO: MAKE REQUEST TO MODEL HERE!
+      const ratedRecipesArray: RecipeRatingResponse[] = ratedRecipes.data!;
+      ratedRecipesArray.sort((a, b) => b.rating - a.rating);
 
-      // Sort based on highest rating
+      // get recommendations based on rated meals
+      const recommendedRecipesResponse: ApiResponse<ContentBasedRecommedationsResponse> =
+        await getContentBasedRecommendations(ratedRecipesArray[0].recipe_id);
 
-      const recommendedRecipesIds = [
-        336098, 268463, 511497, 202416, 482681, 383088,
-      ];
+      if (recommendedRecipesResponse.data === undefined) {
+        return;
+      }
+
+      //get recipe details for recommended recipes
+      const recommendedRecipesIds =
+        recommendedRecipesResponse.data.recommendations.slice(0, 6);
 
       const recommendedRecipesDetailsResponse: ApiResponse<RecipeDetailsResponse>[] =
         await Promise.all(
