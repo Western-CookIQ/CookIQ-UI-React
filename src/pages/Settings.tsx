@@ -11,47 +11,125 @@ import {
   Avatar,
   Typography,
   Paper,
+  imageListItemBarClasses,
 } from "@mui/material";
 
 import { ColumnContainer } from "../components";
 import { GetUserResponse } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
-import { getUserDetails } from "../api/authenication";
-
-const profileImage = `${process.env.PUBLIC_URL}/image/Profile_Image.jpg`;
+import { getUserDetails, updateUserDetails } from "../api/authenication";
+//import { User } from "../types/UserResponse"
+//import { getUser, updateUser } from "../api/user"
 
 const Settings: React.FC = () => {
   const [fNameEdit, setFNameEdit] = useState(true);
   const [lNameEdit, setLNameEdit] = useState(true);
-  const [passwordEdit, setPasswordEdit] = useState(true);
+  //const [passwordEdit, setPasswordEdit] = useState(true);
   const [fName, setFName] = useState("");
   const [lName, setLName] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [image, setImage] = useState("");
+  //const [publicProfileEnabled, setPublicProfileEnabled] = useState(false);
+  const defaultImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTz_PnL4lnzSDKighhjBQlZwv1M5LKWGlRgxw&usqp=CAU://png.pngtree.com/element_our/20200610/ourmid/pngtree-default-avatar-image_2237213.jpg"
 
-  const handleFNameChange = () => {
+  const handleFNameChange = async () => {
     if (!fNameEdit) {
-      //Update server
-      console.log(`Updated name to ${fName}`);
+      const jwtToken = localStorage.getItem('AccessToken');
+
+      if (jwtToken) {
+        const updatedFields: Partial<GetUserResponse> = {
+          fName: fName,
+        };
+        const result = await updateUserDetails(jwtToken, updatedFields);
+
+        if (!result.error) {
+          setFName(fName);
+          console.log('User updated successfully:', result.data);
+        } else {
+          console.error('Error updating user:', result.error);
+        }
+      } else {
+        console.error('JWT token not found in local storage');
+      }
+      console.log(`Updated first name to ${fName}`);
     }
     setFNameEdit(!fNameEdit);
   };
-  const handleLNameChange = () => {
+  const handleLNameChange = async () => {
     if (!lNameEdit) {
-      //Update server
-      console.log(`Updated name to ${lName}`);
+      const jwtToken = localStorage.getItem('AccessToken');
+
+      if (jwtToken) {
+        const updatedFields: Partial<GetUserResponse> = {
+          lName: lName,
+        };
+        const result = await updateUserDetails(jwtToken, updatedFields);
+
+        if (!result.error) {
+          setLName(lName);
+          console.log('User updated successfully:', result.data);
+        } else {
+          console.error('Error updating user:', result.error);
+        }
+      } else {
+        console.error('JWT token not found in local storage');
+      }
+      console.log(`Updated last name to ${lName}`);
     }
     setLNameEdit(!lNameEdit);
   };
-  const handlePasswordChange = () => {
+  /*const handlePasswordChange = () => {
     setPasswordEdit(!passwordEdit);
-  };
+  };*/
   const handleFNameText = (event: any) => {
     setFName(event.target.value);
   };
   const handleLNameText = (event: any) => {
     setLName(event.target.value);
   };
+  const handleImageChange = (event: any) => {
+    const selectedFile = event.target.files[0];
+    setImage(selectedFile ? URL.createObjectURL(selectedFile) : defaultImage);
+    /*const jwtToken = localStorage.getItem('AccessToken');
+
+      if (jwtToken) {
+        const updatedFields: Partial<GetUserResponse> = {
+          picture: image,
+        };
+        const result = await updateUserDetails(jwtToken, updatedFields);
+
+        if (!result.error) {
+          setImage(image);
+          console.log('User updated successfully:', result.data);
+        } else {
+          console.error('Error updating user:', result.error);
+        }
+      } else {
+        console.error('JWT token not found in local storage');
+      }
+      console.log(`Updated last name to ${lName}`);
+      */
+  };
+  /*const handleSwitchChange = async (event: any) => {
+    const jwtToken = localStorage.getItem('AccessToken');
+
+    if (jwtToken) {
+      const updatedFields: Partial<User> = {
+        is_first_login: false,
+        is_public: event.target.checked,
+      };
+      const result = await updateUser(jwtToken, updatedFields);
+
+      if (!result.error) {
+        setPublicProfileEnabled(event.target.checked);
+        console.log('User updated successfully:', result.data);
+      } else {
+        console.error('Error updating user:', result.error);
+      }
+    } else {
+      console.error('JWT token not found in local storage');
+    }
+  };*/
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,16 +137,22 @@ const Settings: React.FC = () => {
         const jwtToken = localStorage.getItem("AccessToken");
 
         if (jwtToken) {
-          const userInfo: ApiResponse<GetUserResponse> = await getUserDetails(
-            jwtToken
-          );
+          const userInfo: ApiResponse<GetUserResponse> = await getUserDetails(jwtToken);
+          //const userBools: ApiResponse<User> = await getUser(jwtToken);
           if (userInfo.data) {
             setFName(userInfo.data.fName);
             setLName(userInfo.data.lName);
-            //setEmail(userInfo.data.email);
+            setEmail(userInfo.data.email);
+            setImage(userInfo.data.picture);
+            //setPublicProfileEnabled(userInfo.data.is_public);
           }
+          /*
+          if (userBools.data) {
+            setPublicProfileEnabled(userBools.data.is_public || false);
+          }*/
 
           console.log(userInfo);
+          //console.log(userBools);
         } else {
           console.error("JWT token not found in local storage");
         }
@@ -118,17 +202,19 @@ const Settings: React.FC = () => {
             <Typography variant="caption" sx={{ color: "#555555" }}>
               Profile Image
             </Typography>
-            <Avatar
-              alt="Profile Image"
-              src={profileImage}
-              sx={{
-                width: 100,
-                height: 100,
-                backgroundColor: "transparent",
-                ml: 3,
-              }}
-            />
-          </Stack>
+            {image && (
+              <Avatar
+                alt="Profile Image"
+                src={image}
+                sx={{
+                  width: 100,
+                  height: 100,
+                  backgroundColor: "transparent",
+                  ml: 3,
+                }}
+              />
+            )}
+        </Stack>
 
           <Button
             variant="text"
@@ -136,7 +222,7 @@ const Settings: React.FC = () => {
             sx={{ color: "black", mr: 2 }}
           >
             Upload Image
-            <input type="file" accept="image/*" style={{ display: "none" }} />
+            <input type="file" accept="image/*" style={{ display: "none" }} onChange={handleImageChange}/>
           </Button>
           <div
             className="underline"
@@ -194,7 +280,7 @@ const Settings: React.FC = () => {
           <TextField
             margin="normal"
             label="Email"
-            defaultValue="joesmith@gmail.com"
+            value={email}
             variant="standard"
             InputProps={{
               readOnly: true,
@@ -202,7 +288,7 @@ const Settings: React.FC = () => {
             fullWidth
           ></TextField>
         </Container>
-
+        {/*
         {passwordEdit ? (
           <Container sx={{ display: "flex", alignItems: "center" }}>
             <TextField
@@ -257,13 +343,15 @@ const Settings: React.FC = () => {
             </Button>
           </Container>
         )}
+
         <FormGroup sx={{ alignItems: "center", mt: 2, mb: 2 }}>
           <FormControlLabel
-            control={<Switch />}
+            control={<Switch checked={publicProfileEnabled} onChange={handleSwitchChange} />}
             label="Enable Public Profile"
             labelPlacement="start"
           />
         </FormGroup>
+        */}
       </Paper>
     </ColumnContainer>
   );

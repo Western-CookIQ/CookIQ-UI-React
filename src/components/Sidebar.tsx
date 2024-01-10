@@ -10,31 +10,65 @@ import {
   Box,
   Divider,
 } from "@mui/material";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+
+// @ts-ignore
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import { GetUserResponse } from "../types/AuthResponses";
+import { ApiResponse } from "../types/utils";
+import { getUserDetails } from "../api/authenication";
 
 import { useNavigate } from "react-router-dom";
-const profileImage = `${process.env.PUBLIC_URL}/image/Profile_Image.jpg`;
-
-const icons = [
-  AssignmentOutlinedIcon,
-  BarChartOutlinedIcon,
-  AccountCircleOutlinedIcon,
-];
-
-const drawerWidth = 240;
-
-const fName = "Joe";
-const lName = "Smith";
+import { useEffect, useState } from "react";
+import profileImage from "../assets/Profile_Image.jpg";
 
 interface ISidebar {
   children: React.ReactNode;
 }
 
 const Sidebar: React.FC<ISidebar> = ({ children }) => {
+  const [fName, setFName] = useState("");
+  const [lName, setLName] = useState("");
+  const [image, setImage] = useState("");
+
   const navigate = useNavigate();
+
+  const icons = [
+    AssignmentOutlinedIcon,
+    BarChartOutlinedIcon,
+    AccountCircleOutlinedIcon,
+  ];
+  
+  const drawerWidth = 240;
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const jwtToken = localStorage.getItem("AccessToken");
+  
+        if (jwtToken) {
+          const userInfo: ApiResponse<GetUserResponse> = await getUserDetails(
+            jwtToken
+          );
+          if (userInfo.data) {
+            setFName(userInfo.data.fName);
+            setLName(userInfo.data.lName);
+            setImage(userInfo.data.picture);
+          }
+  
+          console.log(userInfo);
+        } else {
+          console.error("JWT token not found in local storage");
+        }
+      } catch (error) {
+        // Handle errors
+        console.error("Error fetching user details:", error);
+      }
+    };
+        fetchData();
+    }, []);
 
   const handleItemClick = (route: any) => {
     navigate(route);
@@ -58,7 +92,7 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
           <ListItem>
             <Avatar
               alt="Profile Image"
-              src={profileImage}
+              src={image}
               sx={{
                 width: 50,
                 height: 50,
@@ -92,7 +126,7 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
           <ListItem>
             <ListItemButton onClick={() => handleItemClick(`/settings`)}>
               <ListItemIcon>
-                <SettingsOutlinedIcon />
+                <SettingsOutlinedIcon/>
               </ListItemIcon>
               <ListItemText primary="Settings" />
             </ListItemButton>
