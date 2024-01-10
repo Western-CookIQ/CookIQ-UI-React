@@ -83,19 +83,20 @@ const Settings: React.FC = () => {
   const handleLNameText = (event: any) => {
     setLName(event.target.value);
   };
-  const handleImageChange = (event: any) => {
+  const handleImageChange = async (event: any) => {
     const selectedFile = event.target.files[0];
     setImage(selectedFile ? URL.createObjectURL(selectedFile) : defaultImage);
-    /*const jwtToken = localStorage.getItem('AccessToken');
+    /*
+    const jwtToken = localStorage.getItem('AccessToken');
 
       if (jwtToken) {
         const updatedFields: Partial<GetUserResponse> = {
-          picture: image,
+          picture: selectedFile,
         };
         const result = await updateUserDetails(jwtToken, updatedFields);
 
         if (!result.error) {
-          setImage(image);
+          setImage(selectedFile ? URL.createObjectURL(selectedFile) : defaultImage);
           console.log('User updated successfully:', result.data);
         } else {
           console.error('Error updating user:', result.error);
@@ -103,7 +104,7 @@ const Settings: React.FC = () => {
       } else {
         console.error('JWT token not found in local storage');
       }
-      console.log(`Updated last name to ${lName}`);
+      console.log(`Updated profile image`);
       */
   };
   /*const handleSwitchChange = async (event: any) => {
