@@ -3,15 +3,11 @@ import { useState, useEffect } from "react";
 import {
   Button,
   Container,
-  Switch,
-  FormGroup,
-  FormControlLabel,
   TextField,
   Stack,
   Avatar,
   Typography,
   Paper,
-  imageListItemBarClasses,
 } from "@mui/material";
 
 import { ColumnContainer } from "../components";

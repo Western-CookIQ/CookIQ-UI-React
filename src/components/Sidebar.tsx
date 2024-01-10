@@ -22,7 +22,7 @@ import { getUserDetails } from "../api/authenication";
 
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import profileImage from "../assets/Profile_Image.jpg";
+//import profileImage from "../assets/Profile_Image.jpg";
 
 interface ISidebar {
   children: React.ReactNode;
