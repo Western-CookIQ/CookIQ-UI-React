@@ -4,6 +4,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { getRecipeDetails } from "../api/recipe"; //All recipe details
 import { postMealRating } from "../api/meal";
+import { updateUser } from "../api/user";
 import { ApiResponse } from "../types/utils";
 import { RecipeDetailsResponse } from "../types/RecipeResponses";
 import { useNavigate } from "react-router-dom";
@@ -31,9 +32,6 @@ const InitialRecipeReview: React.FC = () => {
   const [recipes, setRecipes] = useState<RecipeDetailsResponse[]>([]);
   const [ratings, setRatings] = useState<{ [key: number]: number }>({});
   const navigate = useNavigate();
-  // const userSub = localStorage.getItem("UserSub"); //userID in Cognito and DB
-  //const [completed, setCompleted] = useState(false); //Has the user completed onboarding?
-
 
   useEffect(() => {
   const fetchData = async () => {
@@ -78,8 +76,12 @@ const InitialRecipeReview: React.FC = () => {
       await postMealRating(UserSub, recipe.id, false, ratingValue, false); //post the meal with its rating, id, and related user
     }
 
-    // Set a flag to indicate completion
-    //setCompleted(true);
+    //Update the userFlag to indicate that is_First_Login is FALSE
+    try {
+      await updateUser(UserSub, false);
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
 
     navigate("/recommendations")
   };
