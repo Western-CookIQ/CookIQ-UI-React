@@ -17,10 +17,11 @@ const RecommendationPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       // get all meals which are rated for the user
-      const ratedRecipes: ApiResponse<RecipeRatingResponse[]> =
+      const ratedRecipesResponse: ApiResponse<RecipeRatingResponse[]> =
         await getRatedMeals(localStorage.getItem("UserSub") as string);
 
-      const ratedRecipesArray: RecipeRatingResponse[] = ratedRecipes.data!;
+      const ratedRecipesArray: RecipeRatingResponse[] =
+        ratedRecipesResponse.data!;
       ratedRecipesArray.sort((a, b) => b.rating - a.rating);
 
       // get recommendations based on rated meals
