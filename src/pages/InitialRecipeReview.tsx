@@ -6,6 +6,7 @@ import { getRecipeDetails } from "../api/recipe"; //All recipe details
 import { postMealRating } from "../api/meal";
 import { ApiResponse } from "../types/utils";
 import { RecipeDetailsResponse } from "../types/RecipeResponses";
+import { useNavigate } from "react-router-dom";
 
 //https://mui.com/material-ui/material-icons/
 
@@ -29,6 +30,7 @@ const InitialRecipeReview: React.FC = () => {
   const [scrollIndex, setScrollIndex] = useState(0);
   const [recipes, setRecipes] = useState<RecipeDetailsResponse[]>([]);
   const [ratings, setRatings] = useState<{ [key: number]: number }>({});
+  const navigate = useNavigate();
   // const userSub = localStorage.getItem("UserSub"); //userID in Cognito and DB
   //const [completed, setCompleted] = useState(false); //Has the user completed onboarding?
 
@@ -78,6 +80,8 @@ const InitialRecipeReview: React.FC = () => {
 
     // Set a flag to indicate completion
     //setCompleted(true);
+
+    navigate("/recommendations")
   };
 
   return (
@@ -159,7 +163,6 @@ const InitialRecipeReview: React.FC = () => {
           <ArrowForwardIosIcon />
         </Button>
         <Button onClick={handleDone}
-          href="/recommendations"
           style={{
             backgroundColor: "#6AB089", // Blue color
             color: "#fff", // White text
