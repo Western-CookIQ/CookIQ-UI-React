@@ -7,20 +7,27 @@ import {
   ResendConfirmationResponse,
 } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
-import { ColumnContainer } from "../components";
-import { resendConfirmationCode, confirmation } from "../api/authenication";
+import { ColumnContainer, PasswordField } from "../components";
+import {
+  resendConfirmationCode,
+  confirmation,
+  forgotPasswordConfirmation,
+} from "../api/authenication";
 const cookIQLogo = `${process.env.PUBLIC_URL}/image/CookIQ_Logo_Text.png`;
 
 const ConfirmationCodePage: React.FC = () => {
   const [confirmationCode, setConfirmationCode] = useState<string[]>(
     Array.from({ length: 6 }, () => "")
   );
+  const [password, setPassword] = useState("");
+
   const inputRefs = useRef<Array<HTMLInputElement | null>>(
     Array.from({ length: 6 }, () => null)
   );
 
   const navigate = useNavigate();
   const location = useLocation();
+  const type = location.state.type ? "password" : "email";
 
   const handleCodeChange = (
     event: ChangeEvent<HTMLInputElement>,
@@ -48,12 +55,26 @@ const ConfirmationCodePage: React.FC = () => {
   };
 
   const handleConfirmCode = async () => {
-    // Implement your logic for handling the confirmation code here
     const code = confirmationCode.join("");
 
-    if (code.length === 6) {
+    if (type === "email" && code.length === 6) {
       const confirmationResponse: ApiResponse<ConfirmationResponse> =
         await confirmation(location.state.Username, code);
+
+      confirmationResponse.data?.$metadata.httpStatusCode === 200
+        ? navigate("/")
+        : Promise.reject(
+            new Error(
+              `HTTP error! Status: ${confirmationResponse.data?.$metadata.httpStatusCode}`
+            )
+          );
+    } else if (type === "password" && code.length === 6 && password !== "") {
+      const confirmationResponse: ApiResponse<ConfirmationResponse> =
+        await forgotPasswordConfirmation(
+          location.state.Username,
+          code,
+          password
+        );
 
       confirmationResponse.data?.$metadata.httpStatusCode === 200
         ? navigate("/")
@@ -102,22 +123,25 @@ const ConfirmationCodePage: React.FC = () => {
       <Typography
         variant="h5"
         sx={{
+          mt: 5,
           width: "full",
           textAlign: "left",
           fontWeight: "bold",
         }}
       >
-        Verify your email
+        {type === "password"
+          ? "Let's Reset Your Password"
+          : "Verify Your Email"}
       </Typography>
       <Typography variant="body2" sx={{ mt: 2 }}>
-        We emailed you a six digit email code to {location?.state?.email}. Enter
-        the code below to confirm your email address.
+        We emailed you a six digit email code to {location?.state?.Username}.
+        Enter the code below to confirm your email address.
       </Typography>
       <Box>
         <Box
           sx={{
             display: "flex",
-            my: 10,
+            my: type === "email" ? 10 : 5,
             justifyContent: "center",
           }}
         >
@@ -139,8 +163,21 @@ const ConfirmationCodePage: React.FC = () => {
             />
           ))}
         </Box>
+        {type === "password" && (
+          <Box sx={{ my: 2 }}>
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              Please enter a new password below.
+            </Typography>
+            <PasswordField
+              password={password}
+              setPassword={setPassword}
+              name="password"
+              placeholder="New Password"
+            />
+          </Box>
+        )}
         <Button variant="contained" fullWidth onClick={handleConfirmCode}>
-          Verify Code
+          {type === "password" ? "Reset Password" : "Verify Code"}
         </Button>
       </Box>
       <Box

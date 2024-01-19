@@ -11,7 +11,6 @@ import {
 } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
 
-
 // Register
 export const register = async (
   email: string,
@@ -73,13 +72,14 @@ export const resendConfirmationCode = async (
   }
 };
 
-// Forgot Password
+// Forgot Password Email Confirmation
 export const forgotPassword = async (
   email: string
 ): Promise<ApiResponse<ForgotPasswordResponse>> => {
+  console.log(url);
   try {
-    const res = await axios.post(`${url}api/auth/forgotPassword`, {
-      email: email,
+    const res = await axios.post(`${url}/api/auth/forgotPassword`, {
+      username: email,
     });
     return { data: res.data };
   } catch (error: unknown) {
@@ -92,8 +92,28 @@ export const forgotPassword = async (
   }
 };
 
-// Forgot Password
-export const forgotPasswordConfirmation = () => {};
+// Forgot Password Reset
+export const forgotPasswordConfirmation = async (
+  username: string,
+  code: string,
+  password: string
+) => {
+  try {
+    const res = await axios.post(`${url}/api/auth/forgotPasswordConfirmation`, {
+      username: username,
+      confirmationCode: code,
+      password: password,
+    });
+    return { data: res.data };
+  } catch (error: unknown) {
+    return {
+      error:
+        error instanceof Error
+          ? error.message
+          : "Unable to reset User password.",
+    };
+  }
+};
 
 // Login
 export const login = async (
@@ -131,9 +151,15 @@ export const getUserDetails = async (
 };
 
 // Update User Details
-export const updateUserDetails = async (accessToken: string, updatedUser: Partial<GetUserResponse>): Promise<ApiResponse<GetUserResponse>> => {
+export const updateUserDetails = async (
+  accessToken: string,
+  updatedUser: Partial<GetUserResponse>
+): Promise<ApiResponse<GetUserResponse>> => {
   try {
-    const res = await axios.put(`${url}/api/auth/user?accessToken=${accessToken}`, updatedUser);
+    const res = await axios.put(
+      `${url}/api/auth/user?accessToken=${accessToken}`,
+      updatedUser
+    );
     return { data: res.data };
   } catch (error: unknown) {
     return {
