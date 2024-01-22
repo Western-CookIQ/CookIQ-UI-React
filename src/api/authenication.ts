@@ -11,6 +11,7 @@ import {
 } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
 
+
 // Register
 export const register = async (
   email: string,
@@ -125,6 +126,19 @@ export const getUserDetails = async (
     return {
       error:
         error instanceof Error ? error.message : "Unable to Get User Data.",
+    };
+  }
+};
+
+// Update User Details
+export const updateUserDetails = async (accessToken: string, updatedUser: Partial<GetUserResponse>): Promise<ApiResponse<GetUserResponse>> => {
+  try {
+    const res = await axios.put(`${url}/api/auth/user?accessToken=${accessToken}`, updatedUser);
+    return { data: res.data };
+  } catch (error: unknown) {
+    return {
+      error:
+        error instanceof Error ? error.message : "Unable to Update User Data.",
     };
   }
 };

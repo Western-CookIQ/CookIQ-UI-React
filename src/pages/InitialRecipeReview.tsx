@@ -2,47 +2,20 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, Typography, Button, Rating } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-// import { getRecipePreview } from "../api/recipe";
+import { getRecipeDetails } from "../api/recipe"; //All recipe details
+import { ApiResponse } from "../types/utils";
+import { RecipeDetailsResponse } from "../types/RecipeResponses";
+
 
 //https://mui.com/material-ui/material-icons/
 
-interface Recipe {
-  id: number;
-  name: string;
-  description: string;
+const recipeIds = [486261, 486641, 495271, 501408, 493413]; //Static
+
+function toProperCase(input: string): string {
+  return input
+    .toLowerCase()
+    .replace(/(?:^|\s)\w/g, (match) => match.toUpperCase());
 }
-
-// interface RatingInputProps {
-//   onChange: (value: number) => void;
-// }
-
-const recipes: Recipe[] = [
-  {
-    id: 1,
-    name: "Recipe 1",
-    description: "This is the description for Recipe 1.",
-  },
-  {
-    id: 2,
-    name: "Recipe 2",
-    description: "This is the description for Recipe 2.",
-  },
-  {
-    id: 3,
-    name: "Recipe 3",
-    description: "This is the description for Recipe 3.",
-  },
-  {
-    id: 4,
-    name: "Recipe 4",
-    description: "This is the description for Recipe 4.",
-  },
-  {
-    id: 5,
-    name: "Recipe 5",
-    description: "This is the description for Recipe 5.",
-  },
-];
 
 // const PREFIXED_MEALS_ID = [486261, 486641, 495271, 501408, 493413];
 //mexican stack up
@@ -51,14 +24,29 @@ const recipes: Recipe[] = [
 //2 ingredients eggs banana pancakes
 //loaded potato and buffalo chicken casserole
 
+
 const InitialRecipeReview: React.FC = () => {
   const [scrollIndex, setScrollIndex] = useState(0);
-  // const [recipeDetails, setRecipeDetails] = useState([]);
+  const [recipes, setRecipes] = useState<RecipeDetailsResponse[]>([]);
   const [ratings, setRatings] = useState<{ [key: number]: number }>({});
   // const userSub = localStorage.getItem("UserSub"); //userID in Cognito and DB
 
   useEffect(() => {
-    //call get request for recipes
+  const fetchData = async () => {
+    // get initial review recipe details
+    const recommendedRecipesDetailsResponse: ApiResponse<RecipeDetailsResponse>[] =
+      await Promise.all(
+        recipeIds.map((recipeId) => getRecipeDetails(recipeId))
+      );
+
+    const recipeDetailsArray: RecipeDetailsResponse[] =
+      recommendedRecipesDetailsResponse
+        .filter((response) => response.data !== undefined) // Filter out responses with no data
+        .map((response) => response.data!); // Use ! to assert that data is present (after filtering)
+
+    setRecipes(recipeDetailsArray);
+    };
+    fetchData();
   }, []);
 
   const handleNext = () => {
@@ -80,7 +68,7 @@ const InitialRecipeReview: React.FC = () => {
 
   return (
     <div style={{ position: "relative", width: "100%", overflow: "hidden" }}>
-      <Typography component="h1" variant="h6" sx={{ textAlign: "left" }}>
+      <Typography component="h1" variant="h6" sx={{ textAlign: "left",  fontWeight: 'bold', color: '#6AB089'}}>
         Before getting started, rate your first five meals!
       </Typography>
       <div
@@ -107,7 +95,7 @@ const InitialRecipeReview: React.FC = () => {
               style={{ flex: 1, display: "flex", flexDirection: "column" }}
             >
               <div>
-                <Typography variant="h5">{recipe.name}</Typography>
+                <Typography variant="h5">{toProperCase(recipe.name)}</Typography>
                 <Typography>{recipe.description}</Typography>
               </div>
               <div style={{ marginTop: "auto", fontSize: "2em" }}>
@@ -122,7 +110,13 @@ const InitialRecipeReview: React.FC = () => {
                 />
               </div>
             </CardContent>
-            <div style={{ flex: 1, background: "#f0f0f0" }}>{"picture"}</div>
+            <div style={{ flex: 1, background: "#f0f0f0" }}>
+            <img
+                src="https://www.eatingwell.com/thmb/v86G1ptq0Tk_3CDPTvpKdh2Pi7g=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/57831531-73819d8ce8f5413cac42cf1c907bc37a.jpg"
+                alt=""
+                style={{ width: "auto", height: "40vw" }}
+              />
+            </div>
           </Card>
         ))}
       </div>
@@ -151,7 +145,7 @@ const InitialRecipeReview: React.FC = () => {
           <ArrowForwardIosIcon />
         </Button>
         <Button
-          href="/#"
+          href="/Recommendations"
           style={{
             backgroundColor: "#6AB089", // Blue color
             color: "#fff", // White text

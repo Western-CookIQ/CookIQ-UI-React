@@ -8,12 +8,14 @@ export const getRatedMeals = async (
   userSub: string
 ): Promise<ApiResponse<RecipeRatingResponse[]>> => {
   try {
-    const res = await protectedAxios.get(`${url}/api/meals/${userSub}`);
+    const res = await protectedAxios.get(`${url}/api/meal/${userSub}`);
     return { data: res.data };
   } catch (error: unknown) {
     return {
       error:
-        error instanceof Error ? error.message : "Unable to register user.",
+        error instanceof Error
+          ? error.message
+          : "Unable to get user meal ratings.",
     };
   }
 };

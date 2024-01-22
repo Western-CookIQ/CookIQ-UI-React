@@ -11,12 +11,13 @@ import {
 import { MealCard } from "../components";
 import { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-// import { getRatedMeals } from "../api/meal";
+import { getRatedMeals } from "../api/meal";
 import { getRecipeDetails } from "../api/recipe";
-// import { RecipeRatingResponse } from "../types/MealResponses";
+import { RecipeRatingResponse } from "../types/MealResponses";
 import { ApiResponse } from "../types/utils";
 import { RecipeDetailsResponse } from "../types/RecipeResponses";
-import { Close } from "@mui/icons-material";
+import { getContentBasedRecommendations } from "../api/recommendations";
+import { ContentBasedRecommedationsResponse } from "../types/RecommendationsReponses";
 
 const RecommendationPage: React.FC = () => {
   const [active, setActive] = useState(-1);
@@ -30,9 +31,25 @@ const RecommendationPage: React.FC = () => {
   // RECOMMENDATION CALL
   useEffect(() => {
     const fetchData = async () => {
-      const recommendedRecipesIds = [
-        336098, 268463, 511497, 202416, 482681, 383088,
-      ];
+      // get all meals which are rated for the user
+      const ratedRecipesResponse: ApiResponse<RecipeRatingResponse[]> =
+        await getRatedMeals(localStorage.getItem("UserSub") as string);
+
+      const ratedRecipesArray: RecipeRatingResponse[] =
+        ratedRecipesResponse.data!;
+      ratedRecipesArray.sort((a, b) => b.rating - a.rating);
+
+      // get recommendations based on rated meals
+      const recommendedRecipesResponse: ApiResponse<ContentBasedRecommedationsResponse> =
+        await getContentBasedRecommendations(ratedRecipesArray[0].recipe_id);
+
+      if (recommendedRecipesResponse.data === undefined) {
+        return;
+      }
+
+      //get recipe details for recommended recipes
+      const recommendedRecipesIds =
+        recommendedRecipesResponse.data.recommendations.slice(0, 6);
 
       const recommendedRecipesDetailsResponse: ApiResponse<RecipeDetailsResponse>[] =
         await Promise.all(

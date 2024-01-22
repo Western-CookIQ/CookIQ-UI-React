@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "src/**"
+  workflow_dispatch:
 
 jobs:
   build-project:
@@ -25,6 +26,8 @@ jobs:
 
       - name: Build React application
         run: npm run build
+        env:
+          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
 
       # Store the build folder as an artifact
       # This will make it available for the deploy job
