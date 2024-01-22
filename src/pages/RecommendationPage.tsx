@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Grid,
+  IconButton,
   Modal,
   Paper,
   Slider,
@@ -9,16 +10,22 @@ import {
 } from "@mui/material";
 import { MealCard } from "../components";
 import { useEffect, useState } from "react";
+import CloseIcon from "@mui/icons-material/Close";
 // import { getRatedMeals } from "../api/meal";
 import { getRecipeDetails } from "../api/recipe";
 // import { RecipeRatingResponse } from "../types/MealResponses";
 import { ApiResponse } from "../types/utils";
 import { RecipeDetailsResponse } from "../types/RecipeResponses";
+import { Close } from "@mui/icons-material";
 
 const RecommendationPage: React.FC = () => {
   const [active, setActive] = useState(-1);
   const [recipes, setRecipes] = useState<RecipeDetailsResponse[]>([]);
   const [openCurrentPreferences, setCurrentPreferences] = useState(false);
+
+  const handleClose = () => {
+    setCurrentPreferences(false);
+  };
 
   // RECOMMENDATION CALL
   useEffect(() => {
@@ -72,6 +79,17 @@ const RecommendationPage: React.FC = () => {
                 padding: "2vw",
               }}
             >
+              <IconButton
+                aria-label="close"
+                onClick={handleClose}
+                sx={{
+                  position: "absolute",
+                  right: 8,
+                  top: 8,
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
               <Typography variant="h5">Preferences</Typography>
               {Object.keys(values).map((property) => (
                 <Box key={property} sx={{ width: 300 }}>
