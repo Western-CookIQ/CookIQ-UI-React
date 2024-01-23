@@ -37,6 +37,11 @@ const RecommendationPage: React.FC = () => {
 
       const ratedRecipesArray: RecipeRatingResponse[] =
         ratedRecipesResponse.data!;
+
+      if (ratedRecipesArray.length === 0) {
+        return;
+      }
+
       ratedRecipesArray.sort((a, b) => b.rating - a.rating);
 
       // get recommendations based on rated meals
