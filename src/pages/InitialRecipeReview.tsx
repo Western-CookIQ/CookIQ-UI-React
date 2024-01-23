@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, Typography, Button, Rating } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { Dialog, DialogContent, DialogTitle, DialogActions } from "@mui/material";
 import { getRecipeDetails } from "../api/recipe"; //All recipe details
 import { postMealRating } from "../api/meal";
 import { updateUser } from "../api/user";
 import { ApiResponse } from "../types/utils";
 import { RecipeDetailsResponse } from "../types/RecipeResponses";
 import { useNavigate } from "react-router-dom";
+
 
 //https://mui.com/material-ui/material-icons/
 
@@ -31,6 +33,7 @@ const InitialRecipeReview: React.FC = () => {
   const [scrollIndex, setScrollIndex] = useState(0);
   const [recipes, setRecipes] = useState<RecipeDetailsResponse[]>([]);
   const [ratings, setRatings] = useState<{ [key: number]: number }>({});
+  const [openDialog, setOpenDialog] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -68,6 +71,10 @@ const InitialRecipeReview: React.FC = () => {
     }));
   };
 
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+  };
+
   const handleDone = async () => {
     let UserSub = localStorage.getItem("UserSub") as string
     // Iterate through recipes and post ratings
@@ -88,6 +95,28 @@ const InitialRecipeReview: React.FC = () => {
 
   return (
     <div style={{ position: "relative", width: "100%", overflow: "hidden" }}>
+         {/* Explanation Dialog */}
+         <Dialog open={openDialog} onClose={handleDialogClose}>
+        <DialogTitle>Before you begin...</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Welcome to the meal rating page! Here, you'll rate your first five meals.
+            Click the "Next" and "Back" buttons to navigate through the meals, and use the
+            star rating to give your feedback. Once you're done, click the "Done" button.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}  style={{
+            backgroundColor: "#6AB089", // Blue color
+            color: "#fff", // White text
+            borderRadius: 18, // Rounded corners
+            margin: 8,
+            position: "absolute",
+            right: 0,
+          }}>Begin</Button>
+        </DialogActions>
+      </Dialog>
+
       <Typography component="h1" variant="h6" sx={{ textAlign: "left",  fontWeight: 'bold', color: '#6AB089'}}>
         Before getting started, rate your first five meals!
       </Typography>
