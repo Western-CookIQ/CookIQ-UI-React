@@ -25,7 +25,7 @@ import { User } from "../types/UserResponse";
     }
   };
 
-// update user in DB
+// update user in DB test
 export const updateUser = async (
   userSub: string,
   isFirstLogin: boolean = false
