@@ -2,9 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, Typography, Button, Rating } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { Dialog, DialogContent, DialogTitle, DialogActions } from "@mui/material";
 import { getRecipeDetails } from "../api/recipe"; //All recipe details
+import { postMealRating } from "../api/meal";
+import { updateUser } from "../api/user";
 import { ApiResponse } from "../types/utils";
 import { RecipeDetailsResponse } from "../types/RecipeResponses";
+import { useNavigate } from "react-router-dom";
 
 
 //https://mui.com/material-ui/material-icons/
@@ -29,7 +33,8 @@ const InitialRecipeReview: React.FC = () => {
   const [scrollIndex, setScrollIndex] = useState(0);
   const [recipes, setRecipes] = useState<RecipeDetailsResponse[]>([]);
   const [ratings, setRatings] = useState<{ [key: number]: number }>({});
-  // const userSub = localStorage.getItem("UserSub"); //userID in Cognito and DB
+  const [openDialog, setOpenDialog] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
   const fetchData = async () => {
@@ -66,8 +71,55 @@ const InitialRecipeReview: React.FC = () => {
     }));
   };
 
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+  };
+
+  const handleDone = async () => {
+    let UserSub = localStorage.getItem("UserSub") as string
+    // Iterate through recipes and post ratings
+    for (const recipe of recipes) {
+      const ratingValue = ratings[recipe.id] || 3.5; // Default to 3.5 if not rated
+      await postMealRating(UserSub, recipe.id, false, ratingValue, false); //post the meal with its rating, id, and related user
+    }
+
+    //Update the userFlag to indicate that is_First_Login is FALSE
+    try {
+      await updateUser(UserSub, false);
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+
+    navigate("/recommendations")
+  };
+
   return (
     <div style={{ position: "relative", width: "100%", overflow: "hidden" }}>
+         {/* Welcome Dialog */}
+         <Dialog open={openDialog} onClose={handleDialogClose}>
+        <DialogTitle component="h1" variant="h6" sx={{ fontSize: "2em", textAlign: "center",  fontWeight: 'bold', color: '#6AB089'}}>Discover Your Palette</DialogTitle>
+        <DialogContent style={{textAlign: "center"}}>
+          <Typography>
+          To begin your CookIQ journey, we need to get to know your taste preferences. Take a moment to 
+          rate the following meals – it should only take a minute. Your ratings will help us understand your 
+          preferences, ensuring that the meal recommendations are tailored just for you.
+          <br />
+          <br /> 
+          Click the arrows to navigate through the meals, and use the
+          star rating to give your feedback!
+          </Typography>
+        </DialogContent>
+        <DialogActions style={{ justifyContent: 'center' }}>
+          <Button onClick={handleDialogClose}  style={{
+            backgroundColor: "#6AB089", // Blue color
+            color: "#fff", // White text
+            borderRadius: 18, // Rounded corners
+            margin: 8,
+            right: 0,
+          }}>Begin</Button>
+        </DialogActions>
+      </Dialog>
+
       <Typography component="h1" variant="h6" sx={{ textAlign: "left",  fontWeight: 'bold', color: '#6AB089'}}>
         Before getting started, rate your first five meals!
       </Typography>
@@ -125,9 +177,9 @@ const InitialRecipeReview: React.FC = () => {
         <Button
           onClick={handlePrev}
           style={{
-            backgroundColor: "#6AB089", // Blue color
-            color: "#fff", // White text
-            borderRadius: 18, // Rounded corners
+            backgroundColor: "#6AB089", 
+            color: "#fff",
+            borderRadius: 18,
             margin: 8,
           }}
         >
@@ -136,20 +188,19 @@ const InitialRecipeReview: React.FC = () => {
         <Button
           onClick={handleNext}
           style={{
-            backgroundColor: "#6AB089", // Blue color
-            color: "#fff", // White text
-            borderRadius: 18, // Rounded corners
+            backgroundColor: "#6AB089",
+            color: "#fff",
+            borderRadius: 18,
             margin: 8,
           }}
         >
           <ArrowForwardIosIcon />
         </Button>
-        <Button
-          href="/Recommendations"
+        <Button onClick={handleDone}
           style={{
-            backgroundColor: "#6AB089", // Blue color
-            color: "#fff", // White text
-            borderRadius: 18, // Rounded corners
+            backgroundColor: "#6AB089", 
+            color: "#fff", 
+            borderRadius: 18,
             margin: 8,
             position: "absolute",
             right: 0,

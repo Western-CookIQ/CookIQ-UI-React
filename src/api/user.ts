@@ -4,15 +4,35 @@ import { ApiResponse } from "../types/utils";
 import protectedAxios from "../config/axois.setup";
 import { User } from "../types/UserResponse";
 
-// add user to DB
-export const postUser = async (
-  userSub: string
+  // add user to DB
+  export const postUser = async (
+    userSub: string
+  ): Promise<ApiResponse<RecipeRatingResponse[]>> => {
+    try {
+      const res = await protectedAxios.post(`${url}/api/client/`, {
+        id: userSub,
+        is_first_login: true,
+        is_public: false,
+      });
+      return { data: res.data };
+    } catch (error: unknown) {
+      return {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unable to register user to db.",
+      };
+    }
+  };
+
+// update user in DB test
+export const updateUser = async (
+  userSub: string,
+  isFirstLogin: boolean = false
 ): Promise<ApiResponse<RecipeRatingResponse[]>> => {
   try {
-    const res = await protectedAxios.post(`${url}/api/client/`, {
-      id: userSub,
-      is_first_login: true,
-      is_public: false,
+    const res = await protectedAxios.put(`${url}/api/client/${userSub}`, {
+      is_first_login: isFirstLogin,
     });
     return { data: res.data };
   } catch (error: unknown) {
@@ -20,7 +40,7 @@ export const postUser = async (
       error:
         error instanceof Error
           ? error.message
-          : "Unable to register user to db.",
+          : "Unable to update user in the db.",
     };
   }
 };
