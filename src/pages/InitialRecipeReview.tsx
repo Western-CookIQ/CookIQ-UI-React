@@ -85,7 +85,7 @@ const InitialRecipeReview: React.FC = () => {
 
     //Update the userFlag to indicate that is_First_Login is FALSE
     try {
-      await updateUser(UserSub, false);
+      // await updateUser(UserSub, false);
     } catch (error) {
       console.error("Error updating user:", error);
     }
