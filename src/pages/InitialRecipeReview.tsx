@@ -95,23 +95,26 @@ const InitialRecipeReview: React.FC = () => {
 
   return (
     <div style={{ position: "relative", width: "100%", overflow: "hidden" }}>
-         {/* Explanation Dialog */}
+         {/* Welcome Dialog */}
          <Dialog open={openDialog} onClose={handleDialogClose}>
-        <DialogTitle>Before you begin...</DialogTitle>
-        <DialogContent>
+        <DialogTitle component="h1" variant="h6" sx={{ fontSize: "2em", textAlign: "center",  fontWeight: 'bold', color: '#6AB089'}}>Discover Your Palette</DialogTitle>
+        <DialogContent style={{textAlign: "center"}}>
           <Typography>
-            Welcome to the meal rating page! Here, you'll rate your first five meals.
-            Click the "Next" and "Back" buttons to navigate through the meals, and use the
-            star rating to give your feedback. Once you're done, click the "Done" button.
+          To begin your CookIQ journey, we need to get to know your taste preferences. Take a moment to 
+          rate the following meals – it should only take a minute. Your ratings will help us understand your 
+          preferences, ensuring that the meal recommendations are tailored just for you.
+          <br />
+          <br /> 
+          Click the arrows to navigate through the meals, and use the
+          star rating to give your feedback!
           </Typography>
         </DialogContent>
-        <DialogActions>
+        <DialogActions style={{ justifyContent: 'center' }}>
           <Button onClick={handleDialogClose}  style={{
             backgroundColor: "#6AB089", // Blue color
             color: "#fff", // White text
             borderRadius: 18, // Rounded corners
             margin: 8,
-            position: "absolute",
             right: 0,
           }}>Begin</Button>
         </DialogActions>
@@ -174,9 +177,9 @@ const InitialRecipeReview: React.FC = () => {
         <Button
           onClick={handlePrev}
           style={{
-            backgroundColor: "#6AB089", // Blue color
-            color: "#fff", // White text
-            borderRadius: 18, // Rounded corners
+            backgroundColor: "#6AB089", 
+            color: "#fff",
+            borderRadius: 18,
             margin: 8,
           }}
         >
@@ -185,9 +188,9 @@ const InitialRecipeReview: React.FC = () => {
         <Button
           onClick={handleNext}
           style={{
-            backgroundColor: "#6AB089", // Blue color
-            color: "#fff", // White text
-            borderRadius: 18, // Rounded corners
+            backgroundColor: "#6AB089",
+            color: "#fff",
+            borderRadius: 18,
             margin: 8,
           }}
         >
@@ -195,9 +198,9 @@ const InitialRecipeReview: React.FC = () => {
         </Button>
         <Button onClick={handleDone}
           style={{
-            backgroundColor: "#6AB089", // Blue color
-            color: "#fff", // White text
-            borderRadius: 18, // Rounded corners
+            backgroundColor: "#6AB089", 
+            color: "#fff", 
+            borderRadius: 18,
             margin: 8,
             position: "absolute",
             right: 0,
