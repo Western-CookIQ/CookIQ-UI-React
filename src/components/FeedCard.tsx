@@ -1,6 +1,6 @@
 import { Box, Paper, Typography, Avatar, IconButton } from "@mui/material";
 import {StarRate, StarHalf, Favorite, FavoriteBorder} from '@mui/icons-material';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface IFeedCard {
     firstName: string,
@@ -22,7 +22,7 @@ const FeedCard: React.FC<IFeedCard> = ({ firstName, lastName, recipeName, prevNu
     for (let i=0; i<Math.floor(rating); i++){
         stars.push(<StarRate fontSize="small" style={{color: "orange"}} key={i}/>)
     }
-    if ((rating % 1) != 0){
+    if ((rating % 1) !== 0){
         stars.push(<StarHalf fontSize="small" style={{color: "orange"}} key={-1}/>)
     }
 
