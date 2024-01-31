@@ -10,7 +10,6 @@ import {
   ConfirmationCodePage,
   SignUpPage,
   ForgotPasswordPage,
-  ForgotPasswordConfirmationCodePage,
   RecommendationPage,
   Settings,
   InitialRecipeReview,
@@ -59,10 +58,6 @@ export const App = () => (
           <Route path="/register" element={<SignUpPage />} />
           <Route path="/confirmation" element={<ConfirmationCodePage />} />
           <Route path="/password" element={<ForgotPasswordPage />} />
-          <Route
-            path="/passwordConfirmation"
-            element={<ForgotPasswordConfirmationCodePage />}
-          />
           <Route
             path="/InitialRecipeReview"
             element={<InitialRecipeReview />}
