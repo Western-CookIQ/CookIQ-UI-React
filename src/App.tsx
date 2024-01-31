@@ -14,6 +14,7 @@ import {
   RecommendationPage,
   Settings,
   InitialRecipeReview,
+  FeedPage
 } from "./pages";
 import { Sidebar } from "./components";
 
@@ -72,6 +73,7 @@ export const App = () => (
               <Sidebar>
                 <Routes>
                   <Route path="/settings" element={<Settings />} />
+                  <Route path="/feed" element={<FeedPage />} />
                   <Route
                     path="/recommendations"
                     element={<RecommendationPage />}
