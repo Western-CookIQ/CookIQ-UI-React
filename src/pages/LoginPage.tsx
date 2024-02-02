@@ -8,6 +8,8 @@ import {
   Typography,
   InputAdornment,
   IconButton,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import {
   EmailOutlined,
@@ -53,6 +55,7 @@ function Credentials(props: any) {
 
 const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showError, setShowError] = useState(false);
   const navigate = useNavigate();
 
   const handleClickShowPassword = () => {
@@ -67,6 +70,11 @@ const LoginPage: React.FC = () => {
       data.get("email") as string,
       data.get("password") as string
     );
+
+    if (loginResponse.error) {
+      setShowError(true);
+      return;
+    }
 
     if (loginResponse.data) {
       const decodedToken = jwtDecode(loginResponse.data.sessionToken);
@@ -96,6 +104,22 @@ const LoginPage: React.FC = () => {
 
   return (
     <Grid container>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        onClose={() => setShowError(false)}
+        open={showError}
+        autoHideDuration={3000}
+        message="Invalid credentials"
+      >
+        <Alert
+          severity="error"
+          onClose={() => setShowError(false)}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          Invalid password or email.
+        </Alert>
+      </Snackbar>
       {/* Left side (Form) */}
       <Grid item xs={12} md={4}>
         <Box
