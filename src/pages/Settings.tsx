@@ -8,24 +8,26 @@ import {
   Avatar,
   Typography,
   Paper,
+  FormGroup,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 
 import { ColumnContainer } from "../components";
 import { GetUserResponse } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
-import { getUserDetails, updateUserDetails } from "../api/authenication";
-//import { User } from "../types/UserResponse"
-//import { getUser, updateUser } from "../api/user"
+import { getUserDetails, updateUserDetails, updateProfileImage} from "../api/authenication";
+import { User } from "../types/UserResponse"
+import { getUser, updateUserSettings } from "../api/user"
 
 const Settings: React.FC = () => {
   const [fNameEdit, setFNameEdit] = useState(true);
   const [lNameEdit, setLNameEdit] = useState(true);
-  //const [passwordEdit, setPasswordEdit] = useState(true);
   const [fName, setFName] = useState("");
   const [lName, setLName] = useState("");
   const [email, setEmail] = useState("");
   const [image, setImage] = useState("");
-  //const [publicProfileEnabled, setPublicProfileEnabled] = useState(false);
+  const [publicProfileEnabled, setPublicProfileEnabled] = useState(false);
   const defaultImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTz_PnL4lnzSDKighhjBQlZwv1M5LKWGlRgxw&usqp=CAU://png.pngtree.com/element_our/20200610/ourmid/pngtree-default-avatar-image_2237213.jpg"
 
   const handleFNameChange = async () => {
@@ -74,9 +76,6 @@ const Settings: React.FC = () => {
     }
     setLNameEdit(!lNameEdit);
   };
-  /*const handlePasswordChange = () => {
-    setPasswordEdit(!passwordEdit);
-  };*/
   const handleFNameText = (event: any) => {
     setFName(event.target.value);
   };
@@ -86,17 +85,21 @@ const Settings: React.FC = () => {
   const handleImageChange = async (event: any) => {
     const selectedFile = event.target.files[0];
     setImage(selectedFile ? URL.createObjectURL(selectedFile) : defaultImage);
-    /*
+    console.log(selectedFile);
     const jwtToken = localStorage.getItem('AccessToken');
 
       if (jwtToken) {
-        const updatedFields: Partial<GetUserResponse> = {
+        /*const updatedFields: Partial<GetUserResponse> = {
           picture: selectedFile,
-        };
-        const result = await updateUserDetails(jwtToken, updatedFields);
+        };*/
+        const formData = new FormData();
+        formData.append('picture', selectedFile);
+        console.log(formData);
+
+        const result = await updateProfileImage(jwtToken, formData);
 
         if (!result.error) {
-          setImage(selectedFile ? URL.createObjectURL(selectedFile) : defaultImage);
+          //setImage(selectedFile ? URL.createObjectURL(selectedFile) : defaultImage);
           console.log('User updated successfully:', result.data);
         } else {
           console.error('Error updating user:', result.error);
@@ -105,53 +108,56 @@ const Settings: React.FC = () => {
         console.error('JWT token not found in local storage');
       }
       console.log(`Updated profile image`);
-      */
   };
-  /*const handleSwitchChange = async (event: any) => {
-    const jwtToken = localStorage.getItem('AccessToken');
+  const handleSwitchChange = async (event: any) => {
+    const userSub = localStorage.getItem('UserSub');
+    setPublicProfileEnabled(event.target.checked);
 
-    if (jwtToken) {
+    if (userSub) {
       const updatedFields: Partial<User> = {
         is_first_login: false,
         is_public: event.target.checked,
       };
-      const result = await updateUser(jwtToken, updatedFields);
+      const result = await updateUserSettings(userSub, updatedFields);
 
       if (!result.error) {
-        setPublicProfileEnabled(event.target.checked);
         console.log('User updated successfully:', result.data);
       } else {
+        setPublicProfileEnabled(!event.target.checked);
         console.error('Error updating user:', result.error);
       }
     } else {
       console.error('JWT token not found in local storage');
     }
-  };*/
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const jwtToken = localStorage.getItem("AccessToken");
+        const userSub = localStorage.getItem("UserSub");
 
         if (jwtToken) {
           const userInfo: ApiResponse<GetUserResponse> = await getUserDetails(jwtToken);
-          //const userBools: ApiResponse<User> = await getUser(jwtToken);
+          
           if (userInfo.data) {
             setFName(userInfo.data.fName);
             setLName(userInfo.data.lName);
             setEmail(userInfo.data.email);
             setImage(userInfo.data.picture);
-            //setPublicProfileEnabled(userInfo.data.is_public);
           }
-          /*
-          if (userBools.data) {
-            setPublicProfileEnabled(userBools.data.is_public || false);
-          }*/
-
           console.log(userInfo);
-          //console.log(userBools);
+
         } else {
           console.error("JWT token not found in local storage");
+        } if(userSub) {
+          const userBools: ApiResponse<User> = await getUser(userSub);
+          if (userBools.data) {
+            setPublicProfileEnabled(userBools.data.is_public || false);
+          }
+          console.log(userBools);
+        } else {
+          console.error("UserSub not found in local storage");
         }
       } catch (error) {
         // Handle errors
@@ -340,6 +346,7 @@ const Settings: React.FC = () => {
             </Button>
           </Container>
         )}
+        */}
 
         <FormGroup sx={{ alignItems: "center", mt: 2, mb: 2 }}>
           <FormControlLabel
@@ -348,7 +355,6 @@ const Settings: React.FC = () => {
             labelPlacement="start"
           />
         </FormGroup>
-        */}
       </Paper>
     </ColumnContainer>
   );

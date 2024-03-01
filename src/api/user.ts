@@ -59,7 +59,7 @@ export const getUser = async (userSub: string): Promise<ApiResponse<User>> => {
 };
 
 // update user is in the db
-export const updateUser = async (userSub: string, updatedUser: Partial<User>): Promise<ApiResponse<User>> => {
+export const updateUserSettings = async (userSub: string, updatedUser: Partial<User>): Promise<ApiResponse<User>> => {
   try {
     const res = await protectedAxios.put(`${url}/api/client/${userSub}`, updatedUser);
     return { data: res.data };

@@ -143,6 +143,19 @@ export const updateUserDetails = async (accessToken: string, updatedUser: Partia
   }
 };
 
+// Update Profile Image
+export const updateProfileImage = async (accessToken: string, formData: FormData): Promise<ApiResponse<GetUserResponse>> => {
+  try {
+    const res = await axios.put(`${url}/api/auth/user?accessToken=${accessToken}`, formData);
+    return { data: res.data };
+  } catch (error: unknown) {
+    return {
+      error:
+        error instanceof Error ? error.message : "Unable to Update User Data.",
+    };
+  }
+};
+
 // Update Password
 // export const updatePassword = (): Promise<ApiResponse<UpdatePasswordResponse>> => {
 // };
