@@ -7,6 +7,8 @@ import {
   TextField,
   Link as MuLink,
   Typography,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { RegisterResponse } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
@@ -39,6 +41,7 @@ function Credentials(props: any) {
 const SignUpPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [showError, setShowError] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -57,11 +60,27 @@ const SignUpPage: React.FC = () => {
       });
     } else if (registerResponse.error) {
       console.error(registerResponse.error);
+      setShowError(true);
     }
   };
 
   return (
     <ColumnContainer>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        onClose={() => setShowError(false)}
+        open={showError}
+        autoHideDuration={3000}
+      >
+        <Alert
+          severity="error"
+          onClose={() => setShowError(false)}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          Unable to signup.
+        </Alert>
+      </Snackbar>
       <Box
         sx={{
           width: "inherit",
