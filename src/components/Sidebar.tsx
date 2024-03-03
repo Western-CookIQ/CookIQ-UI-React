@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 
 // @ts-ignore
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
@@ -39,15 +39,16 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
     AssignmentOutlinedIcon,
     BarChartOutlinedIcon,
     AccountCircleOutlinedIcon,
+    AccountCircleOutlinedIcon,
   ];
-  
+
   const drawerWidth = 240;
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const jwtToken = localStorage.getItem("AccessToken");
-  
+
         if (jwtToken) {
           const userInfo: ApiResponse<GetUserResponse> = await getUserDetails(
             jwtToken
@@ -57,7 +58,7 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
             setLName(userInfo.data.lName);
             setImage(userInfo.data.picture);
           }
-  
+
           console.log(userInfo);
         } else {
           console.error("JWT token not found in local storage");
@@ -67,8 +68,8 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
         console.error("Error fetching user details:", error);
       }
     };
-        fetchData();
-    }, []);
+    fetchData();
+  }, []);
 
   const handleItemClick = (route: any) => {
     navigate(route);
@@ -110,23 +111,27 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
 
         <Divider />
         <List>
-          {["Recommendations", "Feed", "Profile"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton
-                onClick={() => handleItemClick(`/${text.toLowerCase()}`)}
-              >
-                <ListItemIcon>{React.createElement(icons[index])}</ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+          {["Recommendations", "Feed", "Profile", "Connections"].map(
+            (text, index) => (
+              <ListItem key={text} disablePadding>
+                <ListItemButton
+                  onClick={() => handleItemClick(`/${text.toLowerCase()}`)}
+                >
+                  <ListItemIcon>
+                    {React.createElement(icons[index])}
+                  </ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItemButton>
+              </ListItem>
+            )
+          )}
         </List>
         <Divider sx={{ marginTop: "auto" }} />
         <List>
           <ListItem>
             <ListItemButton onClick={() => handleItemClick(`/settings`)}>
               <ListItemIcon>
-                <SettingsOutlinedIcon/>
+                <SettingsOutlinedIcon />
               </ListItemIcon>
               <ListItemText primary="Settings" />
             </ListItemButton>

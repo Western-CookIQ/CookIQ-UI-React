@@ -1,5 +1,6 @@
 import url from "../config/api.setup";
 import axios from "axios";
+import protectedAxios from "../config/axois.setup";
 import {
   LoginResponse,
   RegisterResponse,
@@ -8,6 +9,7 @@ import {
   // UpdatePasswordResponse,
   ResendConfirmationResponse,
   GetUserResponse,
+  SearchUserResponse,
 } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
 
@@ -172,6 +174,25 @@ export const updateUserDetails = async (
 // Update Password
 // export const updatePassword = (): Promise<ApiResponse<UpdatePasswordResponse>> => {
 // };
+
+export const searchUsers = async (
+  search: string,
+  paginationToken: string = ""
+): Promise<ApiResponse<SearchUserResponse>> => {
+  try {
+    const res = await protectedAxios.get(
+      `${url}/api/auth/users?search="${search}"${
+        paginationToken === "" ? "" : `&paginationToken="${paginationToken}"`
+      }`
+    );
+    return { data: res.data };
+  } catch (error: unknown) {
+    return {
+      error:
+        error instanceof Error ? error.message : "Unable to Search User Data.",
+    };
+  }
+};
 
 // Logout
 export const logout = () => {};
