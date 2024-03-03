@@ -1,9 +1,4 @@
-type $metadata = {
-  httpStatusCode: number;
-  requestId: string;
-  attempts: number;
-  totalRetryDelay: number;
-};
+import { $metadata } from "./utils";
 
 export type LoginResponse = {
   sessionToken: string;
@@ -38,4 +33,15 @@ export type GetUserResponse = {
   lName: string;
   picture: string;
   is_public: boolean;
+};
+
+export type UserPreview = {
+  sub: string;
+  name: string;
+};
+
+export type SearchUserResponse = {
+  $metadata: $metadata;
+  Users: UserPreview[] | [];
+  PaginationToken?: string;
 };
