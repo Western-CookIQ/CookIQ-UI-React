@@ -2,6 +2,7 @@ import { Box, Paper, Typography } from "@mui/material";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ScheduleIcon from '@mui/icons-material/Schedule';
 import { RecipeDetailsResponse } from "../types/RecipeResponses";
 
 interface IMealCard {
@@ -29,17 +30,48 @@ const MealCard: React.FC<IMealCard> = ({ type, setActive, index, details }) => {
           sx={{
             width: "100%",
             height: "230px",
-            padding: 2,
+            borderRadius: "20px"
           }}
           onClick={() => setActive(index)}
         >
-          <Typography
+          <Box width="100%" height="70%">
+            <img
+                src="https://www.eatingwell.com/thmb/hXX1-sWEUFqqCt1jgiI3B9tymZU=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/Slowcooker-Bean-Kale-and-Barley-Soup-nopinto-2000-43fa55e856f2462a9bb5f2077d2a7587.jpg"
+                alt=""
+                style={{ width: "100%", height: "100%", objectFit: "cover", opacity: "0.8"}}
+                loading="lazy"
+            />
+          </Box>
+          <Box bgcolor="black" color="white" textAlign="center" whiteSpace="nowrap" overflow="hidden" position="relative" top="-10%" padding="5px 10px" textOverflow="ellipsis" maxHeight="40px" maxWidth="100%">
+              {details.name.toUpperCase()}
+          </Box>
+          <Box display="flex" justifyContent="space-around" color="#6AB089" position="relative" top="-10%" padding="5px 10px">
+            <Box display="flex" flexDirection="column" alignItems="center">
+              <ScheduleIcon />
+              {details.minutes} min
+            </Box>
+            <Box width="2px" bgcolor="#6AB089">
+            </Box>
+            <Box display="flex" flexDirection="column" alignItems="center">
+              {details.calories}
+              <div></div>
+              cals
+            </Box>
+            <Box width="2px" bgcolor="#6AB089">
+            </Box>
+            <Box display="flex" flexDirection="column" alignItems="center">
+              {details.sugar}g
+              <div></div>
+              sugar
+            </Box>
+          </Box>
+          {/* <Typography
             variant="body1"
             sx={{ width: "100%", textAlign: "center", fontWeight: 800, mb: 1 }}
           >
             {details.name}
-          </Typography>
-          <Box
+          </Typography> */}
+          {/* <Box
             sx={{
               display: "flex",
               flexDirection: "column",
@@ -91,7 +123,7 @@ const MealCard: React.FC<IMealCard> = ({ type, setActive, index, details }) => {
                 Estimated Match
               </Typography>
             </Box>
-          </Box>
+          </Box> */}
         </Paper>
       ) : (
         <Box

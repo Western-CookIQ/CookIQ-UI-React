@@ -16,7 +16,7 @@ import {
 import { ColumnContainer } from "../components";
 import { GetUserResponse } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
-import { getUserDetails, updateUserDetails, updateProfileImage} from "../api/authenication";
+import { getUserDetails, updateUserDetails, updateProfileImage, fetchPresignedUrl, uploadFileToS3} from "../api/authenication";
 import { User } from "../types/UserResponse"
 import { getUser, updateUserSettings } from "../api/user"
 
@@ -82,33 +82,55 @@ const Settings: React.FC = () => {
   const handleLNameText = (event: any) => {
     setLName(event.target.value);
   };
+
   const handleImageChange = async (event: any) => {
+    //get uploaded file
     const selectedFile = event.target.files[0];
-    setImage(selectedFile ? URL.createObjectURL(selectedFile) : defaultImage);
-    console.log(selectedFile);
+    if (!selectedFile) {
+      console.error('No file selected');
+      return;
+    }
+    //get access token
     const jwtToken = localStorage.getItem('AccessToken');
+    if (!jwtToken) {
+      console.error('JWT token not found in local storage');
+      return;
+    }
+  
+    try {
+      //Fetch the presigned URL
+      const fileName = selectedFile.name;
+      const fileType = selectedFile.type;
 
-      if (jwtToken) {
-        /*const updatedFields: Partial<GetUserResponse> = {
-          picture: selectedFile,
-        };*/
-        const formData = new FormData();
-        formData.append('picture', selectedFile);
-        console.log(formData);
-
-        const result = await updateProfileImage(jwtToken, formData);
-
-        if (!result.error) {
-          //setImage(selectedFile ? URL.createObjectURL(selectedFile) : defaultImage);
-          console.log('User updated successfully:', result.data);
-        } else {
-          console.error('Error updating user:', result.error);
-        }
-      } else {
-        console.error('JWT token not found in local storage');
+      //Get preSigned URL from S3
+      const presignedUrlResponse = await fetchPresignedUrl(fileName, fileType);
+      if (!presignedUrlResponse.data || presignedUrlResponse.error) {
+        throw new Error('Failed to fetch presigned URL');
       }
-      console.log(`Updated profile image`);
+      const presignedUrl = presignedUrlResponse.data;
+      // Upload the file to S3 using the presigned URL
+      await uploadFileToS3(presignedUrl, selectedFile);
+  
+      // Access the Image URL from the presignedURL
+      const imageUrl = presignedUrl.split('?')[0]; 
+
+      // Update the user profile with the image URL
+      const updatedFields: Partial<GetUserResponse> = {
+        picture: imageUrl,
+      };
+      const result = await updateProfileImage(jwtToken, updatedFields);
+  
+      if (result.error) {
+        throw new Error(`Error updating user: ${result.error}`);
+      }
+  
+      setImage(selectedFile ? URL.createObjectURL(selectedFile) : defaultImage);
+      console.log('User updated successfully:', result.data);
+    } catch (error: unknown) {
+      console.error((error as Error).message || 'An error occurred');
+    }
   };
+
   const handleSwitchChange = async (event: any) => {
     const userSub = localStorage.getItem('UserSub');
     setPublicProfileEnabled(event.target.checked);

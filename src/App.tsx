@@ -10,10 +10,10 @@ import {
   ConfirmationCodePage,
   SignUpPage,
   ForgotPasswordPage,
-  ForgotPasswordConfirmationCodePage,
   RecommendationPage,
   Settings,
   InitialRecipeReview,
+  FeedPage
 } from "./pages";
 import { Sidebar } from "./components";
 
@@ -59,10 +59,6 @@ export const App = () => (
           <Route path="/confirmation" element={<ConfirmationCodePage />} />
           <Route path="/password" element={<ForgotPasswordPage />} />
           <Route
-            path="/passwordConfirmation"
-            element={<ForgotPasswordConfirmationCodePage />}
-          />
-          <Route
             path="/InitialRecipeReview"
             element={<InitialRecipeReview />}
           />
@@ -72,6 +68,7 @@ export const App = () => (
               <Sidebar>
                 <Routes>
                   <Route path="/settings" element={<Settings />} />
+                  <Route path="/feed" element={<FeedPage />} />
                   <Route
                     path="/recommendations"
                     element={<RecommendationPage />}

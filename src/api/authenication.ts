@@ -92,8 +92,28 @@ export const forgotPassword = async (
   }
 };
 
-// Forgot Password
-export const forgotPasswordConfirmation = () => {};
+// Forgot Password Reset
+export const forgotPasswordConfirmation = async (
+  username: string,
+  code: string,
+  password: string
+) => {
+  try {
+    const res = await axios.post(`${url}/api/auth/forgotPasswordConfirmation`, {
+      username: username,
+      confirmationCode: code,
+      password: password,
+    });
+    return { data: res.data };
+  } catch (error: unknown) {
+    return {
+      error:
+        error instanceof Error
+          ? error.message
+          : "Unable to reset User password.",
+    };
+  }
+};
 
 // Login
 export const login = async (
@@ -131,9 +151,15 @@ export const getUserDetails = async (
 };
 
 // Update User Details
-export const updateUserDetails = async (accessToken: string, updatedUser: Partial<GetUserResponse>): Promise<ApiResponse<GetUserResponse>> => {
+export const updateUserDetails = async (
+  accessToken: string,
+  updatedUser: Partial<GetUserResponse>
+): Promise<ApiResponse<GetUserResponse>> => {
   try {
-    const res = await axios.put(`${url}/api/auth/user?accessToken=${accessToken}`, updatedUser);
+    const res = await axios.put(
+      `${url}/api/auth/user?accessToken=${accessToken}`,
+      updatedUser
+    );
     return { data: res.data };
   } catch (error: unknown) {
     return {
@@ -144,15 +170,48 @@ export const updateUserDetails = async (accessToken: string, updatedUser: Partia
 };
 
 // Update Profile Image
-export const updateProfileImage = async (accessToken: string, formData: FormData): Promise<ApiResponse<GetUserResponse>> => {
+export const updateProfileImage = async (accessToken: string, updatedUser: Partial<GetUserResponse>): Promise<ApiResponse<GetUserResponse>> => {
   try {
-    const res = await axios.put(`${url}/api/auth/user?accessToken=${accessToken}`, formData);
+    console.log(updatedUser);
+    const res = await axios.put(`${url}/api/auth/user?accessToken=${accessToken}`, updatedUser);
     return { data: res.data };
   } catch (error: unknown) {
     return {
       error:
         error instanceof Error ? error.message : "Unable to Update User Data.",
     };
+  }
+};
+
+// Get the presignedURL from the S3 bucket
+export const fetchPresignedUrl = async (fileName: string, fileType: string): Promise<ApiResponse<string>> => {
+  try {
+    const encodedFileName = encodeURIComponent(fileName);
+    const encodedFileType = encodeURIComponent(fileType);
+
+    // API route for generating a presigned URL
+    const res = await axios.get(`${url}/api/auth/generate-presigned-url?fileName=${encodedFileName}&fileType=${encodedFileType}`);
+    return { data: res.data.url };
+  } catch (error: any) {
+    return {
+      error: error.message || "Unable to fetch presigned URL.",
+    };
+  }
+};
+
+// Upload the image file to the S3 Bucket
+export const uploadFileToS3 = async (presignedUrl: string, file: File): Promise<void> => {
+  try {
+    // Put request to upload the image URL to S3
+    const res = await axios.put(presignedUrl, file, {
+      headers: {
+        'Content-Type': file.type,
+      },
+    });
+    console.log('Upload successful', res);
+  } catch (error) {
+    console.error('Error uploading file to S3', error);
+    throw new Error('Failed to upload file to S3');
   }
 };
 
