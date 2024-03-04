@@ -13,24 +13,9 @@ interface FollowingStatus {
   [userSub: string]: boolean;
 }
 
-// const useStyles = makeStyles({
-//   searchBar: {
-//     marginBottom: "1rem",
-//   },
-//   userContainer: {
-//     marginBottom: "1rem",
-//     padding: "1rem",
-//     border: "1px solid #ccc",
-//     borderRadius: "8px",
-//   },
-//   followButton: {
-//     marginLeft: "1rem",
-//   },
-//   userName: {
-//     textAlign: "center",
-//     marginBottom: "0.5rem",
-//   },
-// });
+const toProperCase = (str: string): string => {
+  return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+};
 
 const ConnectionPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -103,9 +88,10 @@ const ConnectionPage: React.FC = () => {
             marginBottom: "1rem",
             padding: "1rem",
             border: "1px solid #ccc",
+            display: "flex",
             borderRadius: "8px"}}>
         <Typography variant="h6" sx={{border: 0, textAlign: left}}>
-          {user.name}
+          {toProperCase(user.name)}
         </Typography>
         {/* User sub */}
         {/*<Typography variant="subtitle1">{user.sub}</Typography>*/} 
