@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Button, TextField } from "@mui/material";
-
+import { Box, Button, TextField, Typography, Divider } from "@mui/material";
 import { searchUsers } from "../api/authenication";
 import {
   checkFollowingStatus,
@@ -8,10 +7,30 @@ import {
   unfollowUser,
 } from "../api/connections";
 import { UserPreview } from "../types/AuthResponses";
+import { left } from "@popperjs/core";
 
 interface FollowingStatus {
   [userSub: string]: boolean;
 }
+
+// const useStyles = makeStyles({
+//   searchBar: {
+//     marginBottom: "1rem",
+//   },
+//   userContainer: {
+//     marginBottom: "1rem",
+//     padding: "1rem",
+//     border: "1px solid #ccc",
+//     borderRadius: "8px",
+//   },
+//   followButton: {
+//     marginLeft: "1rem",
+//   },
+//   userName: {
+//     textAlign: "center",
+//     marginBottom: "0.5rem",
+//   },
+// });
 
 const ConnectionPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -69,22 +88,37 @@ const ConnectionPage: React.FC = () => {
   return (
     <div>
       <TextField
+        fullWidth
         label="Search"
         value={searchTerm}
         onChange={(e) => {
           setSearchTerm(e.target.value);
         }}
+        sx = {{marginBottom: "1rem"}}
       />
       {/* Render the list based on the search term */}
       {userList.map((user, index) => (
-        <Box key={index} sx={{ border: 1 }}>
-          {/* Render the user information here */}
-          <p>{user.name}</p>
-          <p>{user.sub}</p>
-          <Button variant="contained" onClick={() => handleFollow(user.sub)}>
-            {followingStatus[user.sub] ? "unfollow user" : "follow user"}
-          </Button>
-        </Box>
+        <Box key={index} 
+          sx={{
+            marginBottom: "1rem",
+            padding: "1rem",
+            border: "1px solid #ccc",
+            borderRadius: "8px"}}>
+        <Typography variant="h6" sx={{border: 0, textAlign: left}}>
+          {user.name}
+        </Typography>
+        {/* User sub */}
+        {/*<Typography variant="subtitle1">{user.sub}</Typography>*/} 
+        <Button
+          variant="contained"
+          onClick={() => handleFollow(user.sub)}
+          sx={{marginLeft: "1rem"}}
+        >
+          {followingStatus[user.sub] ? "Unfollow" : "Follow"}
+        </Button>
+        {/* Add divider between users */}
+        {index !== userList.length - 1 && <Divider />}
+      </Box>
       ))}
     </div>
   );
