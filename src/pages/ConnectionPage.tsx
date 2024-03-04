@@ -71,7 +71,13 @@ const ConnectionPage: React.FC = () => {
   }, [searchTerm]);
 
   return (
-    <div>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      height="100vh"
+    >
       <TextField
         fullWidth
         label="Search"
@@ -79,34 +85,39 @@ const ConnectionPage: React.FC = () => {
         onChange={(e) => {
           setSearchTerm(e.target.value);
         }}
-        sx = {{marginBottom: "1rem"}}
+        sx={{
+          marginBottom: "1rem",
+          textAlign: "center",
+          width: "100%"
+        }}
       />
       {/* Render the list based on the search term */}
       {userList.map((user, index) => (
-        <Box key={index} 
+        <Box
+          key={index}
           sx={{
             marginBottom: "1rem",
             padding: "1rem",
             border: "1px solid #ccc",
+            borderRadius: "8px",
             display: "flex",
-            borderRadius: "8px"}}>
-        <Typography variant="h6" sx={{border: 0, textAlign: left}}>
-          {toProperCase(user.name)}
-        </Typography>
-        {/* User sub */}
-        {/*<Typography variant="subtitle1">{user.sub}</Typography>*/} 
-        <Button
-          variant="contained"
-          onClick={() => handleFollow(user.sub)}
-          sx={{marginLeft: "1rem"}}
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
         >
-          {followingStatus[user.sub] ? "Unfollow" : "Follow"}
-        </Button>
-        {/* Add divider between users */}
-        {index !== userList.length - 1 && <Divider />}
-      </Box>
+          <Typography variant="h6">{toProperCase(user.name)}</Typography>
+          <Button
+            variant="contained"
+            onClick={() => handleFollow(user.sub)}
+            sx={{ marginLeft: "1rem" }}
+          >
+            {followingStatus[user.sub] ? "Unfollow" : "Follow"}
+          </Button>
+          {/* Add divider between users */}
+          {index !== userList.length - 1 && <Divider />}
+        </Box>
       ))}
-    </div>
+    </Box>
   );
 };
 
