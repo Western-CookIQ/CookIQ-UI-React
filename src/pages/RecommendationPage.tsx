@@ -16,8 +16,8 @@ import { getRecipeDetails } from "../api/recipe";
 import { RecipeRatingResponse } from "../types/MealResponses";
 import { ApiResponse } from "../types/utils";
 import { RecipeDetailsResponse } from "../types/RecipeResponses";
-import { getContentBasedRecommendations } from "../api/recommendations";
-import { ContentBasedRecommedationsResponse } from "../types/RecommendationsReponses";
+import { getCollaborativeBasedRecommendations } from "../api/recommendations";
+import { CollaborativeBasedRecommedationsResponse } from "../types/RecommendationsReponses";
 
 const RecommendationPage: React.FC = () => {
   const [active, setActive] = useState(-1);
@@ -45,8 +45,10 @@ const RecommendationPage: React.FC = () => {
       ratedRecipesArray.sort((a, b) => b.rating - a.rating);
 
       // get recommendations based on rated meals
-      const recommendedRecipesResponse: ApiResponse<ContentBasedRecommedationsResponse> =
-        await getContentBasedRecommendations(ratedRecipesArray[0].recipe_id);
+      const recommendedRecipesResponse: ApiResponse<CollaborativeBasedRecommedationsResponse> =
+        await getCollaborativeBasedRecommendations(
+          ratedRecipesArray[0].recipe_id
+        );
 
       if (recommendedRecipesResponse.data === undefined) {
         return;
@@ -58,7 +60,9 @@ const RecommendationPage: React.FC = () => {
 
       const recommendedRecipesDetailsResponse: ApiResponse<RecipeDetailsResponse>[] =
         await Promise.all(
-          recommendedRecipesIds.map((recipeId) => getRecipeDetails(recipeId))
+          recommendedRecipesIds.map((recommendation) =>
+            getRecipeDetails(recommendation.index)
+          )
         );
 
       const recipeDetailsArray: RecipeDetailsResponse[] =
