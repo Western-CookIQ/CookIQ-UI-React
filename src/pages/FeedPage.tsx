@@ -4,6 +4,8 @@ import {
   } from "@mui/material";
 
 import FeedCard from "../components/FeedCard";
+import ConnectionPage from "../pages/ConnectionPage";
+import SearchBar from "../components/SearchBar";
 
 const FeedPage: React.FC = () => {
 
@@ -51,15 +53,27 @@ const FeedPage: React.FC = () => {
     ]
 
     return (
-        <Box marginTop="30px" width="100%">
+        
+        <Box display="flex" flexDirection="column">
+            <Box display="flex" >
+            <Typography variant="h6" justifyContent="left" paddingRight={50}>
+                Search for friends!
+            </Typography>
+             <SearchBar />
+            </Box>
+            
+            <Box marginTop="30px" width="100%">
             <Typography variant="h4">
                 Feed
             </Typography>
+            
+
             {feed.map((feedEl, index) => (
                 <Box key={index} display="flex" justifyContent="center" paddingY="20px">
                     <FeedCard {...feedEl}/>
                 </Box>
             ))}
+            </Box>
         </Box>
     )
 }

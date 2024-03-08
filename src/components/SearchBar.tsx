@@ -12,7 +12,7 @@ interface FollowingStatus {
   [userSub: string]: boolean;
 }
 
-const ConnectionPage: React.FC = () => {
+const SearchBar: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [userList, setUserList] = useState<UserPreview[]>([]);
   const [followingStatus, setFollowingStatus] = useState<FollowingStatus>({});
@@ -71,7 +71,7 @@ const ConnectionPage: React.FC = () => {
       flexDirection="column"
       alignItems="left"
       justifyContent="left"
-      height="100vh"
+      height="0vh"
     >
       <TextField
         fullWidth
@@ -83,12 +83,14 @@ const ConnectionPage: React.FC = () => {
         sx={{
           marginBottom: "1rem",
           textAlign: "center",
-          width: "1 00%",
+          width: "100%",
         }}
       />
       {/* Render the list based on the search term */}
       {userList.map((user, index) => (
         <Box
+         zIndex={1} // render above all else
+         bgcolor="white"
           key={index}
           sx={{
             marginBottom: "1rem",
@@ -97,8 +99,8 @@ const ConnectionPage: React.FC = () => {
             borderRadius: "8px",
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
-            width: "80%",
+           justifyContent: "space-between",
+            width: "100%",
           }}
         >
           <Typography variant="h6">{user.name}</Typography>
@@ -117,4 +119,4 @@ const ConnectionPage: React.FC = () => {
   );
 };
 
-export default ConnectionPage;
+export default SearchBar;
