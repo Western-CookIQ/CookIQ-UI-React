@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import {
     Box,
     Typography,
@@ -5,50 +7,32 @@ import {
 
 import FeedCard from "../components/FeedCard";
 
+import { getFeed } from "../api/feed";
+
+import { Post } from "../types/PostResponses";
+import { RecipeDetailsResponse } from "../types/RecipeResponses"
+import { GetUserResponse } from "../types/AuthResponses";
+
 const FeedPage: React.FC = () => {
 
-    const feed = [
-        {
-            firstName: "Nancy",
-            lastName: "Finnegan",
-            imageURL: "",
-            rating: 5,
-            prevNumLikes: 15,
-            prevLiked: false,
-            description: "Great recipe, literally the best I've ever had",
-            recipeName: "Beef Heart Stew"
-        },
-        {
-            firstName: "Nancy",
-            lastName: "Finnegan",
-            imageURL: "",
-            rating: 4.5,
-            prevNumLikes: 15,
-            prevLiked: false,
-            description: "Great recipe, literally the best I've ever had",
-            recipeName: "Beef Heart Stew"
-        },
-        {
-            firstName: "Nancy",
-            lastName: "Finnegan",
-            imageURL: "",
-            rating: 4.5,
-            prevNumLikes: 15,
-            prevLiked: false,
-            description: "Great recipe, literally the best I've ever had",
-            recipeName: "Beef Heart Stew"
-        },
-        {
-            firstName: "Nancy",
-            lastName: "Finnegan",
-            imageURL: "",
-            rating: 4.5,
-            prevNumLikes: 15,
-            prevLiked: false,
-            description: "Great recipe, literally the best I've ever had",
-            recipeName: "Beef Heart Stew"
-        },
-    ]
+    const [feed, setFeed] = useState<(Post & RecipeDetailsResponse & GetUserResponse)[]>([])
+
+    useEffect(() => {
+        async function fetchFeed() {
+            try{
+                const jwtToken = localStorage.getItem("AccessToken");
+                if (jwtToken){
+                    const sentFeed = await getFeed()
+                    if (sentFeed.data){
+                        setFeed(sentFeed.data)
+                    }
+                }
+            }catch (error){
+                console.error("Error fetching user feed:", error);
+            }
+        }
+        fetchFeed()
+    }, [])
 
     return (
         <Box marginTop="30px" width="100%">

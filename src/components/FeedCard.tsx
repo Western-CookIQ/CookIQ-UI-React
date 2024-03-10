@@ -2,21 +2,16 @@ import { Box, Paper, Typography, Avatar, IconButton } from "@mui/material";
 import {StarRate, StarHalf, Favorite, FavoriteBorder} from '@mui/icons-material';
 import { useState } from "react";
 
-interface IFeedCard {
-    firstName: string,
-    lastName: string,
-    prevNumLikes: number,
-    prevLiked: boolean,
-    description: string,
-    imageURL: string,
-    rating: number,
-    recipeName: string,
-}
+import { Post } from "../types/PostResponses";
+import { GetUserResponse } from "../types/AuthResponses";
+import { RecipeDetailsResponse } from "../types/RecipeResponses"
 
-const FeedCard: React.FC<IFeedCard> = ({ firstName, lastName, recipeName, prevNumLikes, prevLiked, description, imageURL, rating}) => {
+const FeedCard: React.FC<Post & GetUserResponse & RecipeDetailsResponse> = ({ fName: firstName, lName: lastName, name: recipeName, num_likes : prevNumLikes, isLiked: prevLiked, description, picture, rating}) => {
 
-    const [isLiked, setIsLiked] = useState(prevLiked);
-    const [numLikes, setNumLikes] = useState(prevNumLikes);
+    const [isLiked, setIsLiked] = useState<boolean>(prevLiked);
+    const [numLikes, setNumLikes] = useState<number>(+prevNumLikes);
+
+    console.log(numLikes, typeof(numLikes))
 
     const stars = []
     for (let i=0; i<Math.floor(rating); i++){
@@ -50,7 +45,7 @@ const FeedCard: React.FC<IFeedCard> = ({ firstName, lastName, recipeName, prevNu
                 <Box height="20%" display="flex" alignContent="center" alignItems="center" padding="0px 10px">
                     <Avatar
                         alt="Profile Image"
-                        src={"https://media.licdn.com/dms/image/D5603AQF830qoES0u-g/profile-displayphoto-shrink_800_800/0/1675775088210?e=2147483647&v=beta&t=wVQLxkyPfNLd_UYRGUSt7UWcmsculT6snrPKEZiLdmw"}
+                        src={picture}
                         sx={{
                             width: 50,
                             height: 50,
