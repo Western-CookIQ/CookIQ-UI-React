@@ -2,7 +2,7 @@ import { Box, Paper, Typography } from "@mui/material";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ScheduleIcon from '@mui/icons-material/Schedule';
+import ScheduleIcon from "@mui/icons-material/Schedule";
 import { RecipeDetailsResponse } from "../types/RecipeResponses";
 
 interface IMealCard {
@@ -10,18 +10,17 @@ interface IMealCard {
   index: number;
   setActive: Function;
   details: RecipeDetailsResponse;
+  matchScore: number;
 }
 
-const mockInstructions = [
-  "Chop up some guac very finely and precisely.",
-  "Use the tomatoes to make a smooth paste.",
-  "Spread the paste and guac over the pancake.",
-  "Add maple syrup and butter to the guac.",
-  "Season with cilantro.",
-  "Fold pancake in half and enjoy!",
-];
-
-const MealCard: React.FC<IMealCard> = ({ type, setActive, index, details }) => {
+const MealCard: React.FC<IMealCard> = ({
+  type,
+  setActive,
+  index,
+  details,
+  matchScore,
+}) => {
+  // details.steps: string[] = details.steps as unknown as Array<string>;
   return (
     <Box>
       {type === "preview" ? (
@@ -30,38 +29,59 @@ const MealCard: React.FC<IMealCard> = ({ type, setActive, index, details }) => {
           sx={{
             width: "100%",
             height: "230px",
-            borderRadius: "20px"
+            borderRadius: "20px",
           }}
           onClick={() => setActive(index)}
         >
           <Box width="100%" height="70%">
             <img
-                src="https://www.eatingwell.com/thmb/hXX1-sWEUFqqCt1jgiI3B9tymZU=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/Slowcooker-Bean-Kale-and-Barley-Soup-nopinto-2000-43fa55e856f2462a9bb5f2077d2a7587.jpg"
-                alt=""
-                style={{ width: "100%", height: "100%", objectFit: "cover", opacity: "0.8"}}
-                loading="lazy"
+              src={details.url}
+              alt=""
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                opacity: "0.8",
+              }}
+              loading="lazy"
             />
           </Box>
-          <Box bgcolor="black" color="white" textAlign="center" whiteSpace="nowrap" overflow="hidden" position="relative" top="-10%" padding="5px 10px" textOverflow="ellipsis" maxHeight="40px" maxWidth="100%">
-              {details.name.toUpperCase()}
+          <Box
+            bgcolor="black"
+            color="white"
+            textAlign="center"
+            whiteSpace="nowrap"
+            overflow="hidden"
+            position="relative"
+            top="-10%"
+            padding="5px 10px"
+            textOverflow="ellipsis"
+            maxHeight="40px"
+            maxWidth="100%"
+          >
+            {details.name.toUpperCase()}
           </Box>
-          <Box display="flex" justifyContent="space-around" color="#6AB089" position="relative" top="-10%" padding="5px 10px">
+          <Box
+            display="flex"
+            justifyContent="space-around"
+            color="#6AB089"
+            position="relative"
+            top="-10%"
+            padding="5px 10px"
+          >
             <Box display="flex" flexDirection="column" alignItems="center">
               <ScheduleIcon />
               {details.minutes} min
             </Box>
-            <Box width="2px" bgcolor="#6AB089">
-            </Box>
+            <Box width="2px" bgcolor="#6AB089"></Box>
             <Box display="flex" flexDirection="column" alignItems="center">
               {details.calories}
               <div></div>
               cals
             </Box>
-            <Box width="2px" bgcolor="#6AB089">
-            </Box>
+            <Box width="2px" bgcolor="#6AB089"></Box>
             <Box display="flex" flexDirection="column" alignItems="center">
-              {details.sugar}g
-              <div></div>
+              {details.sugar}g<div></div>
               sugar
             </Box>
           </Box>
@@ -210,12 +230,12 @@ const MealCard: React.FC<IMealCard> = ({ type, setActive, index, details }) => {
                   Estimated Match
                 </Typography>
                 <Typography variant="body1" color="primary">
-                  ESTIMATED MATCH
+                  {(matchScore * 100).toFixed(1) + "%"}
                 </Typography>
               </Box>
             </Box>
             <img
-              src="https://www.eatingwell.com/thmb/v86G1ptq0Tk_3CDPTvpKdh2Pi7g=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/57831531-73819d8ce8f5413cac42cf1c907bc37a.jpg"
+              src={details.url}
               alt=""
               style={{ width: "20vw", height: "auto" }}
             />
@@ -223,9 +243,11 @@ const MealCard: React.FC<IMealCard> = ({ type, setActive, index, details }) => {
               Instructions
             </Typography>
             <ol>
-              {mockInstructions.map((step, i) => (
-                <li key={i}>{step}</li>
-              ))}
+              {JSON.parse(details.steps.replace(/'/g, '"')).map(
+                (step: string, i: number) => (
+                  <li key={i}>{step}</li>
+                )
+              )}
             </ol>
           </Box>
         </Box>

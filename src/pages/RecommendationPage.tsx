@@ -19,9 +19,11 @@ import { RecipeDetailsResponse } from "../types/RecipeResponses";
 import { getCollaborativeBasedRecommendations } from "../api/recommendations";
 import { CollaborativeBasedRecommedationsResponse } from "../types/RecommendationsReponses";
 
+type RecipeDetailsAndMatch = RecipeDetailsResponse & { score: number };
+
 const RecommendationPage: React.FC = () => {
   const [active, setActive] = useState(-1);
-  const [recipes, setRecipes] = useState<RecipeDetailsResponse[]>([]);
+  const [recipes, setRecipes] = useState<RecipeDetailsAndMatch[]>([]);
   const [openCurrentPreferences, setCurrentPreferences] = useState(false);
 
   const handleClose = () => {
@@ -34,41 +36,55 @@ const RecommendationPage: React.FC = () => {
       // get all meals which are rated for the user
       const ratedRecipesResponse: ApiResponse<RecipeRatingResponse[]> =
         await getRatedMeals(localStorage.getItem("UserSub") as string);
-
-      const ratedRecipesArray: RecipeRatingResponse[] =
+      let ratedRecipesArray: RecipeRatingResponse[] =
         ratedRecipesResponse.data!;
-
       if (ratedRecipesArray.length === 0) {
         return;
       }
 
-      ratedRecipesArray.sort((a, b) => b.rating - a.rating);
+      // filter the recipes based on the rating 3 and above
+      ratedRecipesArray = ratedRecipesArray.filter(
+        (recipe) => recipe.rating >= 3
+      );
 
-      // get recommendations based on rated meals
-      const recommendedRecipesResponse: ApiResponse<CollaborativeBasedRecommedationsResponse> =
-        await getCollaborativeBasedRecommendations(
-          ratedRecipesArray[0].recipe_id
+      // get all the recommendations for each rated recipe
+      const recommendedRecipesResponse: CollaborativeBasedRecommedationsResponse[] =
+        await Promise.all(
+          ratedRecipesArray.map(async (ratedRecipe) => {
+            const response = await getCollaborativeBasedRecommendations(
+              ratedRecipe.recipe_id
+            );
+            return response.data as CollaborativeBasedRecommedationsResponse;
+          })
         );
 
-      if (recommendedRecipesResponse.data === undefined) {
-        return;
-      }
-
-      //get recipe details for recommended recipes
-      const recommendedRecipesIds =
-        recommendedRecipesResponse.data.recommendations.slice(0, 6);
+      // merge all the recommendations into one array
+      let aggregatedRecommendedRecipes: { id: number; score: number }[] = [];
+      recommendedRecipesResponse.forEach((response) => {
+        if (response === undefined) {
+          return;
+        }
+        aggregatedRecommendedRecipes.push(...response.recommendations);
+      });
 
       const recommendedRecipesDetailsResponse: ApiResponse<RecipeDetailsResponse>[] =
         await Promise.all(
-          recommendedRecipesIds.map((recommendation) =>
-            getRecipeDetails(recommendation.index)
+          aggregatedRecommendedRecipes.map((recommendation) =>
+            getRecipeDetails(recommendation.id)
           )
         );
 
-      const recipeDetailsArray: RecipeDetailsResponse[] =
+      const recipeDetailsArray: RecipeDetailsAndMatch[] =
         recommendedRecipesDetailsResponse
           .filter((response) => response.data !== undefined)
-          .map((response) => response.data!);
+          .map((response) => {
+            return {
+              ...response.data!,
+              score: aggregatedRecommendedRecipes.find(
+                (recommendation) => recommendation.id === response.data!.id
+              )!.score,
+            };
+          });
 
       setRecipes(recipeDetailsArray);
     };
@@ -173,6 +189,7 @@ const RecommendationPage: React.FC = () => {
               >
                 <MealCard
                   details={recipe}
+                  matchScore={recipe.score}
                   index={index}
                   type={active === index ? "full" : "preview"}
                   setActive={setActive}

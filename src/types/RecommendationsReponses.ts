@@ -4,7 +4,7 @@ export type ContentBasedRecommedationsResponse = {
 
 export type CollaborativeBasedRecommedationsResponse = {
   recommendations: {
-    index: number;
+    id: number;
     score: number;
   }[];
 };
