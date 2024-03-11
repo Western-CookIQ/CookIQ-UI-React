@@ -143,6 +143,19 @@ export const updateUserDetails = async (accessToken: string, updatedUser: Partia
   }
 };
 
+export const getUserBySub = async (userSub: string): Promise<ApiResponse<GetUserResponse[]>> => {
+  try {
+    const res = await axios.get(`${url}/api/auth/userInfo?sub=${userSub}`);
+    return { data: res.data };
+  } catch (error: unknown) {
+    return {
+      error:
+        error instanceof Error ? error.message : "Unable to get User Data.",
+    };
+  }
+};
+
+
 // Update Password
 // export const updatePassword = (): Promise<ApiResponse<UpdatePasswordResponse>> => {
 // };

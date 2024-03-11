@@ -11,8 +11,6 @@ const FeedCard: React.FC<Post & GetUserResponse & RecipeDetailsResponse> = ({ fN
     const [isLiked, setIsLiked] = useState<boolean>(prevLiked);
     const [numLikes, setNumLikes] = useState<number>(+prevNumLikes);
 
-    console.log(numLikes, typeof(numLikes))
-
     const stars = []
     for (let i=0; i<Math.floor(rating); i++){
         stars.push(<StarRate fontSize="small" style={{color: "orange"}} key={i}/>)
