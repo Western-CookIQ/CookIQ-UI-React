@@ -86,7 +86,17 @@ const RecommendationPage: React.FC = () => {
             };
           });
 
-      setRecipes(recipeDetailsArray);
+      // Drop any recomendations that fails this JSON.parse(details.steps.replace(/'/g, '"')) check
+      const filteredRecipeDetailsArray = recipeDetailsArray.filter((recipe) => {
+        try {
+          JSON.parse(recipe.steps.replace(/'/g, '"'));
+          return true;
+        } catch (e) {
+          return false;
+        }
+      });
+
+      setRecipes(filteredRecipeDetailsArray);
     };
     fetchData();
   }, []);
