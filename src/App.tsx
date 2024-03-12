@@ -15,8 +15,11 @@ import {
   InitialRecipeReview,
   FeedPage,
   ConnectionPage,
+  Profile,
 } from "./pages";
-import { Sidebar } from "./components";
+import AuthenticatedLayout from "./types/AuthenticatedLayout";
+import { AuthProvider } from './types/AuthContext';
+import ProtectedRoute from "./types/ProtectedRoute";
 
 const theme = createTheme({
   palette: {
@@ -49,40 +52,37 @@ const theme = createTheme({
   },
 });
 
-export const App = () => (
-  <ThemeProvider theme={theme}>
-    <CssBaseline />
-    <Container component="main" sx={{ padding: 1 }}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/register" element={<SignUpPage />} />
-          <Route path="/confirmation" element={<ConfirmationCodePage />} />
-          <Route path="/password" element={<ForgotPasswordPage />} />
-          <Route
-            path="/InitialRecipeReview"
-            element={<InitialRecipeReview />}
-          />
-          <Route
-            path="/*"
-            element={
-              <Sidebar>
-                <Routes>
-                  <Route path="/settings" element={<Settings />} />
-                  <Route path="/feed" element={<FeedPage />} />
-                  <Route
-                    path="/recommendations"
-                    element={<RecommendationPage />}
-                  />
-                  <Route path="/connections" element={<ConnectionPage />} />
-                </Routes>
-              </Sidebar>
-            }
-          />
-        </Routes>
-      </Router>
-    </Container>
-  </ThemeProvider>
-);
+export const App = () => {
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Container component="main" sx={{ padding: 1 }}>
+        <AuthProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<LoginPage />} />
+              <Route path="/register" element={<SignUpPage />} />
+              <Route path="/confirmation" element={<ConfirmationCodePage />} />
+              <Route path="/password" element={<ForgotPasswordPage />} />
+              <Route
+                path="/*"
+                element={
+                    <Routes>
+                      <Route path="/InitialRecipeReview" element={<ProtectedRoute><AuthenticatedLayout><InitialRecipeReview /></AuthenticatedLayout></ProtectedRoute>}/>
+                      <Route path="/settings" element={<ProtectedRoute><AuthenticatedLayout><Settings /></AuthenticatedLayout></ProtectedRoute>} />
+                      <Route path="/feed" element={<ProtectedRoute><AuthenticatedLayout><FeedPage /></AuthenticatedLayout></ProtectedRoute>}/>
+                      <Route path="/recommendations" element={<ProtectedRoute><AuthenticatedLayout><RecommendationPage /></AuthenticatedLayout></ProtectedRoute>}/>
+                      <Route path="/connections" element={<ProtectedRoute><AuthenticatedLayout><ConnectionPage /></AuthenticatedLayout></ProtectedRoute>}/>
+                      <Route path="/profile" element={<ProtectedRoute><AuthenticatedLayout><Profile /></AuthenticatedLayout></ProtectedRoute>}/>
+                    </Routes>
+                }
+              />
+            </Routes>
+          </Router>
+        </AuthProvider>
+      </Container>
+    </ThemeProvider>
+  );
+};
 
 export default App;

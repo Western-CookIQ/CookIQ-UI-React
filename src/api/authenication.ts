@@ -241,4 +241,20 @@ export const searchUsers = async (
 };
 
 // Logout
-export const logout = () => {};
+export const logout = async (accessToken: string): Promise<{ error?: string }> => {
+  try {
+    // Wait for the axios post request to complete using 'await'
+    await axios.post(`${url}/api/auth/logout`, { accessToken });
+
+    // If successful, return an empty object or you could return a success message
+    return {};
+  } catch (error: any) { // Using 'any' to access 'error.message'. For stricter typing, consider a custom error type
+    console.error("Logout error:", error.message); // Logging the error to the console or consider other error reporting mechanisms
+
+    // Return an object with the error message
+    // Adjust the error message based on your error object structure or needs
+    return {
+      error: error.response?.data?.message || error.message || "Unable to logout.",
+    };
+  }
+};
