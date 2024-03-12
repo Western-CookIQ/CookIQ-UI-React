@@ -18,11 +18,15 @@ const ForgotPasswordPage: React.FC = () => {
       await forgotPassword(data.get("email") as string);
 
     if (forgotPasswordResponse.error) {
-      console.error(forgotPasswordResponse.error);
+      console.log(forgotPasswordResponse.error);
+      // TODO: could add a toast here to show the error
     } else {
       forgotPasswordResponse.data?.$metadata.httpStatusCode === 200
-        ? navigate("/passwordCodeConfirmation", {
-            state: { Username: data.get("email") as string },
+        ? navigate("/confirmation", {
+            state: {
+              Username: data.get("email") as string,
+              type: "password",
+            },
           })
         : Promise.reject(
             new Error(
