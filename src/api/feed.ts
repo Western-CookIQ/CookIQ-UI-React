@@ -3,8 +3,6 @@ import { ApiResponse } from "../types/utils";
 import protectedAxios from "../config/axois.setup";
 import { Post } from "../types/PostResponses";
 import { RecipeDetailsResponse } from "../types/RecipeResponses"
-import { GetUserResponse } from "../types/AuthResponses";
-import { getUserBySub } from "./authenication";
 
 // follow user in DB
 export const getFeed = async (
