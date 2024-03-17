@@ -22,6 +22,7 @@ import { getUserDetails } from "../api/authenication";
 
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Chat } from "@mui/icons-material";
 //import profileImage from "../assets/Profile_Image.jpg";
 
 interface ISidebar {
@@ -40,6 +41,7 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
     BarChartOutlinedIcon,
     AccountCircleOutlinedIcon,
     AccountCircleOutlinedIcon,
+    Chat,
   ];
 
   const drawerWidth = 240;
@@ -108,10 +110,9 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
             <ListItemText primary={fName + " " + lName} />
           </ListItem>
         </List>
-
         <Divider />
         <List>
-          {["Recommendations", "Feed", "Profile", "Connections"].map(
+          {["Recommendations", "Feed", "Profile", "Connections", "Chat"].map(
             (text, index) => (
               <ListItem key={text} disablePadding>
                 <ListItemButton

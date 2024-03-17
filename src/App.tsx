@@ -15,6 +15,7 @@ import {
   InitialRecipeReview,
   FeedPage,
   ConnectionPage,
+  ChatPage,
 } from "./pages";
 import { Sidebar } from "./components";
 
@@ -75,6 +76,7 @@ export const App = () => (
                     element={<RecommendationPage />}
                   />
                   <Route path="/connections" element={<ConnectionPage />} />
+                  <Route path="/chat" element={<ChatPage />} />
                 </Routes>
               </Sidebar>
             }
