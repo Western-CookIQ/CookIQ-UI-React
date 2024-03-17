@@ -6,6 +6,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Avatar,
 } from "@mui/material";
 import { useState } from "react";
 
@@ -33,7 +34,18 @@ const ChatPage: React.FC = () => {
         <List>
           {messages.map((message, index) => (
             <ListItem key={index}>
-              <ListItemText primary={message} />
+              <Avatar></Avatar>
+              <Box
+                marginLeft="10px"
+                padding="10px"
+                bgcolor="primary.main"
+                color="white"
+                borderRadius="10px"
+              >
+                <Typography variant="body1" noWrap={false}>
+                  {message}
+                </Typography>
+              </Box>
             </ListItem>
           ))}
         </List>
