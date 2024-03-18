@@ -69,11 +69,11 @@ export const App = () => {
                 element={
                   <Routes>
                     <Route
-                      path="/InitialRecipeReview"
+                      path="/recipe-onboarding"
                       element={
                         <ProtectedRoute>
                           <AuthenticatedLayout>
-                            <InitialRecipeReview />
+                            <RecipeOnboardingPage />
                           </AuthenticatedLayout>
                         </ProtectedRoute>
                       }
