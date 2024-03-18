@@ -16,13 +16,14 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import LogoutIcon from '@mui/icons-material/Logout';
 import { GetUserResponse } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
-import { getUserDetails } from "../api/authenication";
+import { getUserDetails, logout } from "../api/authenication";
+import { useAuth } from '../types/AuthContext';
 
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-//import profileImage from "../assets/Profile_Image.jpg";
 
 interface ISidebar {
   children: React.ReactNode;
@@ -32,6 +33,7 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
   const [fName, setFName] = useState("");
   const [lName, setLName] = useState("");
   const [image, setImage] = useState("");
+  const { setIsAuthenticated } = useAuth();
 
   const navigate = useNavigate();
 
@@ -58,8 +60,6 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
             setLName(userInfo.data.lName);
             setImage(userInfo.data.picture);
           }
-
-          console.log(userInfo);
         } else {
           console.error("JWT token not found in local storage");
         }
@@ -73,6 +73,29 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
 
   const handleItemClick = (route: any) => {
     navigate(route);
+  };
+
+  const LogOut = async () => {
+    const jwtToken = localStorage.getItem('AccessToken');
+  
+    if (jwtToken) {
+      try {
+        const result = await logout(jwtToken);
+  
+        if (!result.error) {
+          console.log('User logged out successfully');
+        } else {
+          console.error('Error logging out:', result.error);
+        }
+      } catch (error) {
+        console.error('Unexpected error during logout:', error);
+      }
+    } else {
+      console.error('JWT token not found in local storage');
+    }
+    localStorage.removeItem('AccessToken');
+    setIsAuthenticated(false);
+    navigate("/");
   };
 
   return (
@@ -103,9 +126,11 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
                 mt: 2,
               }}
             />
+            <ListItemButton onClick={() => handleItemClick(`/profile`)}></ListItemButton>
           </ListItem>
           <ListItem sx={{ ml: 1 }}>
             <ListItemText primary={fName + " " + lName} />
+
           </ListItem>
         </List>
 
@@ -134,6 +159,14 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
                 <SettingsOutlinedIcon />
               </ListItemIcon>
               <ListItemText primary="Settings" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem>
+            <ListItemButton onClick={() => LogOut()}>
+              <ListItemIcon>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText primary="Log Out" />
             </ListItemButton>
           </ListItem>
         </List>
