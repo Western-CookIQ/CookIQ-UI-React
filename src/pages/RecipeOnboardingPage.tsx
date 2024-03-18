@@ -32,7 +32,7 @@ function toProperCase(input: string): string {
 //2 ingredients eggs banana pancakes
 //loaded potato and buffalo chicken casserole
 
-const InitialRecipeReview: React.FC = () => {
+const RecipeOnboardingPage: React.FC = () => {
   const [scrollIndex, setScrollIndex] = useState(0);
   const [recipes, setRecipes] = useState<RecipeDetailsResponse[]>([]);
   const [ratings, setRatings] = useState<{ [key: number]: number }>({});
@@ -83,7 +83,7 @@ const InitialRecipeReview: React.FC = () => {
     // Iterate through recipes and post ratings
     for (const recipe of recipes) {
       const ratingValue = ratings[recipe.id] || 3.5; // Default to 3.5 if not rated
-      await postMealRating(UserSub, recipe.id, false, ratingValue, false); //post the meal with its rating, id, and related user
+      await postMealRating(recipe.id, ratingValue); //post the meal with its rating, id, and related user
     }
 
     //Update the userFlag to indicate that is_First_Login is FALSE
@@ -241,4 +241,4 @@ const InitialRecipeReview: React.FC = () => {
   );
 };
 
-export default InitialRecipeReview;
+export default RecipeOnboardingPage;
