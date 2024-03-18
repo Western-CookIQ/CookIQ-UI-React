@@ -2,14 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, Typography, Button, Rating } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { Dialog, DialogContent, DialogTitle, DialogActions } from "@mui/material";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+} from "@mui/material";
 import { getRecipeDetails } from "../api/recipe"; //All recipe details
 import { postMealRating } from "../api/meal";
 import { updateUser } from "../api/user";
 import { ApiResponse } from "../types/utils";
 import { RecipeDetailsResponse } from "../types/RecipeResponses";
 import { useNavigate } from "react-router-dom";
-
 
 //https://mui.com/material-ui/material-icons/
 
@@ -28,7 +32,6 @@ function toProperCase(input: string): string {
 //2 ingredients eggs banana pancakes
 //loaded potato and buffalo chicken casserole
 
-
 const InitialRecipeReview: React.FC = () => {
   const [scrollIndex, setScrollIndex] = useState(0);
   const [recipes, setRecipes] = useState<RecipeDetailsResponse[]>([]);
@@ -37,19 +40,19 @@ const InitialRecipeReview: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-  const fetchData = async () => {
-    // get initial review recipe details
-    const recommendedRecipesDetailsResponse: ApiResponse<RecipeDetailsResponse>[] =
-      await Promise.all(
-        recipeIds.map((recipeId) => getRecipeDetails(recipeId))
-      );
+    const fetchData = async () => {
+      // get initial review recipe details
+      const recommendedRecipesDetailsResponse: ApiResponse<RecipeDetailsResponse>[] =
+        await Promise.all(
+          recipeIds.map((recipeId) => getRecipeDetails(recipeId))
+        );
 
-    const recipeDetailsArray: RecipeDetailsResponse[] =
-      recommendedRecipesDetailsResponse
-        .filter((response) => response.data !== undefined) // Filter out responses with no data
-        .map((response) => response.data!); // Use ! to assert that data is present (after filtering)
+      const recipeDetailsArray: RecipeDetailsResponse[] =
+        recommendedRecipesDetailsResponse
+          .filter((response) => response.data !== undefined) // Filter out responses with no data
+          .map((response) => response.data!); // Use ! to assert that data is present (after filtering)
 
-    setRecipes(recipeDetailsArray);
+      setRecipes(recipeDetailsArray);
     };
     fetchData();
   }, []);
@@ -76,7 +79,7 @@ const InitialRecipeReview: React.FC = () => {
   };
 
   const handleDone = async () => {
-    let UserSub = localStorage.getItem("UserSub") as string
+    let UserSub = localStorage.getItem("UserSub") as string;
     // Iterate through recipes and post ratings
     for (const recipe of recipes) {
       const ratingValue = ratings[recipe.id] || 3.5; // Default to 3.5 if not rated
@@ -90,37 +93,59 @@ const InitialRecipeReview: React.FC = () => {
       console.error("Error updating user:", error);
     }
 
-    navigate("/recommendations")
+    navigate("/recommendations");
   };
 
   return (
     <div style={{ position: "relative", width: "100%", overflow: "hidden" }}>
-         {/* Welcome Dialog */}
-         <Dialog open={openDialog} onClose={handleDialogClose}>
-        <DialogTitle component="h1" variant="h6" sx={{ fontSize: "2em", textAlign: "center",  fontWeight: 'bold', color: '#6AB089'}}>Discover Your Palette</DialogTitle>
-        <DialogContent style={{textAlign: "center"}}>
+      {/* Welcome Dialog */}
+      <Dialog open={openDialog} onClose={handleDialogClose}>
+        <DialogTitle
+          component="h1"
+          variant="h6"
+          sx={{
+            fontSize: "2em",
+            textAlign: "center",
+            fontWeight: "bold",
+            color: "#6AB089",
+          }}
+        >
+          Discover Your Palette
+        </DialogTitle>
+        <DialogContent style={{ textAlign: "center" }}>
           <Typography>
-          To begin your CookIQ journey, we need to get to know your taste preferences. Take a moment to 
-          rate the following meals – it should only take a minute. Your ratings will help us understand your 
-          preferences, ensuring that the meal recommendations are tailored just for you.
-          <br />
-          <br /> 
-          Click the arrows to navigate through the meals, and use the
-          star rating to give your feedback!
+            To begin your CookIQ journey, we need to get to know your taste
+            preferences. Take a moment to rate the following meals – it should
+            only take a minute. Your ratings will help us understand your
+            preferences, ensuring that the meal recommendations are tailored
+            just for you.
+            <br />
+            <br />
+            Click the arrows to navigate through the meals, and use the star
+            rating to give your feedback!
           </Typography>
         </DialogContent>
-        <DialogActions style={{ justifyContent: 'center' }}>
-          <Button onClick={handleDialogClose}  style={{
-            backgroundColor: "#6AB089", // Blue color
-            color: "#fff", // White text
-            borderRadius: 18, // Rounded corners
-            margin: 8,
-            right: 0,
-          }}>Begin</Button>
+        <DialogActions style={{ justifyContent: "center" }}>
+          <Button
+            onClick={handleDialogClose}
+            style={{
+              backgroundColor: "#6AB089", // Blue color
+              color: "#fff", // White text
+              borderRadius: 18, // Rounded corners
+              margin: 8,
+              right: 0,
+            }}
+          >
+            Begin
+          </Button>
         </DialogActions>
       </Dialog>
 
-      <Typography component="h1" variant="h6" sx={{ textAlign: "left",  fontWeight: 'bold', color: '#6AB089'}}>
+      <Typography
+        component="h1"
+        variant="h6"
+        sx={{ textAlign: "left", fontWeight: "bold", color: "#6AB089" }}
+      >
         Before getting started, rate your first five meals!
       </Typography>
       <div
@@ -147,7 +172,9 @@ const InitialRecipeReview: React.FC = () => {
               style={{ flex: 1, display: "flex", flexDirection: "column" }}
             >
               <div>
-                <Typography variant="h5">{toProperCase(recipe.name)}</Typography>
+                <Typography variant="h5">
+                  {toProperCase(recipe.name)}
+                </Typography>
                 <Typography>{recipe.description}</Typography>
               </div>
               <div style={{ marginTop: "auto", fontSize: "2em" }}>
@@ -163,8 +190,8 @@ const InitialRecipeReview: React.FC = () => {
               </div>
             </CardContent>
             <div style={{ flex: 1, background: "#f0f0f0" }}>
-            <img
-                src="https://www.eatingwell.com/thmb/v86G1ptq0Tk_3CDPTvpKdh2Pi7g=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/57831531-73819d8ce8f5413cac42cf1c907bc37a.jpg"
+              <img
+                src={recipe.url}
                 alt=""
                 style={{ width: "auto", height: "40vw" }}
               />
@@ -177,7 +204,7 @@ const InitialRecipeReview: React.FC = () => {
         <Button
           onClick={handlePrev}
           style={{
-            backgroundColor: "#6AB089", 
+            backgroundColor: "#6AB089",
             color: "#fff",
             borderRadius: 18,
             margin: 8,
@@ -196,10 +223,11 @@ const InitialRecipeReview: React.FC = () => {
         >
           <ArrowForwardIosIcon />
         </Button>
-        <Button onClick={handleDone}
+        <Button
+          onClick={handleDone}
           style={{
-            backgroundColor: "#6AB089", 
-            color: "#fff", 
+            backgroundColor: "#6AB089",
+            color: "#fff",
             borderRadius: 18,
             margin: 8,
             position: "absolute",

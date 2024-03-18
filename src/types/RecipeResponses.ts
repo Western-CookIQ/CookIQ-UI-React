@@ -17,4 +17,5 @@ export type RecipeDetailsResponse = {
   protein: number;
   sat_fat: number;
   carbs: number;
+  url: string;
 };
