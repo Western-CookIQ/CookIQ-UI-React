@@ -12,7 +12,7 @@ import {
   ForgotPasswordPage,
   RecommendationPage,
   Settings,
-  InitialRecipeReview,
+  RecipeOnboardingPage,
   FeedPage,
   ConnectionPage,
 } from "./pages";
@@ -59,10 +59,7 @@ export const App = () => (
           <Route path="/register" element={<SignUpPage />} />
           <Route path="/confirmation" element={<ConfirmationCodePage />} />
           <Route path="/password" element={<ForgotPasswordPage />} />
-          <Route
-            path="/InitialRecipeReview"
-            element={<InitialRecipeReview />}
-          />
+          <Route path="/recipe-onboarding" element={<RecipeOnboardingPage />} />
           <Route
             path="/*"
             element={
