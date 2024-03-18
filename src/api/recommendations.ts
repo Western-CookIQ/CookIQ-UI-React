@@ -1,5 +1,8 @@
 import url from "../config/api.setup";
-import { ContentBasedRecommedationsResponse } from "../types/RecommendationsReponses";
+import {
+  ContentBasedRecommedationsResponse,
+  CollaborativeBasedRecommedationsResponse,
+} from "../types/RecommendationsReponses";
 import { ApiResponse } from "../types/utils";
 import protectedAxios from "../config/axois.setup";
 
@@ -10,6 +13,23 @@ export const getContentBasedRecommendations = async (
   try {
     const res = await protectedAxios.get(
       `${url}/api/recommendations/content-based/${id}`
+    );
+    return { data: res.data };
+  } catch (error: unknown) {
+    return {
+      error:
+        error instanceof Error ? error.message : "Unable to register user.",
+    };
+  }
+};
+
+// GET: recipe recommendations based on collaborative based filter
+export const getCollaborativeBasedRecommendations = async (
+  id: number
+): Promise<ApiResponse<CollaborativeBasedRecommedationsResponse>> => {
+  try {
+    const res = await protectedAxios.get(
+      `${url}/api/recommendations/collaborative-based/${id}`
     );
     return { data: res.data };
   } catch (error: unknown) {

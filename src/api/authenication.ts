@@ -13,6 +13,7 @@ import {
 } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
 
+
 // Register
 export const register = async (
   email: string,
@@ -74,14 +75,13 @@ export const resendConfirmationCode = async (
   }
 };
 
-// Forgot Password Email Confirmation
+// Forgot Password
 export const forgotPassword = async (
   email: string
 ): Promise<ApiResponse<ForgotPasswordResponse>> => {
-  console.log(url);
   try {
-    const res = await axios.post(`${url}/api/auth/forgotPassword`, {
-      username: email,
+    const res = await axios.post(`${url}api/auth/forgotPassword`, {
+      email: email,
     });
     return { data: res.data };
   } catch (error: unknown) {
@@ -168,6 +168,63 @@ export const updateUserDetails = async (
       error:
         error instanceof Error ? error.message : "Unable to Update User Data.",
     };
+  }
+};
+
+// Update Profile Image
+export const updateProfileImage = async (accessToken: string, updatedUser: Partial<GetUserResponse>): Promise<ApiResponse<GetUserResponse>> => {
+  try {
+    console.log(updatedUser);
+    const res = await axios.put(`${url}/api/auth/user?accessToken=${accessToken}`, updatedUser);
+    return { data: res.data };
+  } catch (error: unknown) {
+    return {
+      error:
+        error instanceof Error ? error.message : "Unable to Update User Data.",
+    };
+  }
+};
+
+export const getUserBySub = async (userSub: string): Promise<ApiResponse<GetUserResponse[]>> => {
+  try {
+    const res = await axios.get(`${url}/api/auth/userInfo?sub=${userSub}`);
+    return { data: res.data };
+  } catch (error: unknown) {
+    return {
+      error:
+        error instanceof Error ? error.message : "Unable to get User Data.",
+    }
+  }
+}
+// Get the presignedURL from the S3 bucket
+export const fetchPresignedUrl = async (fileName: string, fileType: string): Promise<ApiResponse<string>> => {
+  try {
+    const encodedFileName = encodeURIComponent(fileName);
+    const encodedFileType = encodeURIComponent(fileType);
+
+    // API route for generating a presigned URL
+    const res = await axios.get(`${url}/api/auth/generate-presigned-url?fileName=${encodedFileName}&fileType=${encodedFileType}`);
+    return { data: res.data.url };
+  } catch (error: any) {
+    return {
+      error: error.message || "Unable to fetch presigned URL.",
+    };
+  }
+};
+
+// Upload the image file to the S3 Bucket
+export const uploadFileToS3 = async (presignedUrl: string, file: File): Promise<void> => {
+  try {
+    // Put request to upload the image URL to S3
+    const res = await axios.put(presignedUrl, file, {
+      headers: {
+        'Content-Type': file.type,
+      },
+    });
+    console.log('Upload successful', res);
+  } catch (error) {
+    console.error('Error uploading file to S3', error);
+    throw new Error('Failed to upload file to S3');
   }
 };
 
