@@ -5,7 +5,6 @@ import {
   Button,
   List,
   ListItem,
-  ListItemText,
   Avatar,
 } from "@mui/material";
 import { useState } from "react";
