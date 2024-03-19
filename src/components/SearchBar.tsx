@@ -88,7 +88,7 @@ const SearchBar: React.FC = () => {
         sx={{
           marginBottom: "0.5rem",
           textAlign: "center",
-          width: "120%",
+          width: "100%",
         }}
       />
       {/* Render the list based on the search term */}
@@ -104,7 +104,7 @@ const SearchBar: React.FC = () => {
             borderRadius: "8px",
             display: "flex",
             justifyContent: "space-between",
-            width: "120%"
+            width: "100%"
           }}
         >
           <Typography variant="h6" sx={{flex: 1}}>{properCase(user.name)}</Typography>

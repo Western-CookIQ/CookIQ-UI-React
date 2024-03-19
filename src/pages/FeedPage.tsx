@@ -55,7 +55,7 @@ const FeedPage: React.FC = () => {
 
     return (
         <Box marginTop="30px" width="100%">
-            <Box display="flex" paddingLeft={40} >
+            <Box display="flex" marginBottom="75px" width="100%">
                 <SearchBar />
             </Box>
             {isLoading ? (
