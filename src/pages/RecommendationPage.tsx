@@ -153,8 +153,8 @@ const RecommendationPage: React.FC = () => {
   };
 
   const [preferences, setPreferences] = useState<Values>({
-    Carlories: { min: 0, max: 100 },
-    Time: { min: 0, max: 100 },
+    Calories: { min: 0, max: 10000 },
+    Time: { min: 0, max: 120 },
   });
 
   const handleMinChange = (property: string, value: number) => {
@@ -294,34 +294,51 @@ const RecommendationPage: React.FC = () => {
             </Box>
           ) : (
             <Grid container={active === -1} columnSpacing={4} rowSpacing={1}>
-              {recipes.map((recipe, index) => (
-                <Grid
-                  item
-                  xs={4}
-                  key={index}
-                  sx={{
-                    height: "250px",
-                    width: "100%",
-                    display:
-                      active !== -1 && active !== index ? "none" : "block",
-                  }}
-                >
-                  <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
+              {recipes
+                .filter((recipe) => {
+                  // Check if the recipe's time is within the min and max values
+                  const timeInRange =
+                    recipe.minutes >= preferences.Time.min &&
+                    recipe.minutes <= preferences.Time.max;
+
+                  // Check if the recipe's calories are within the min and max values
+                  const caloriesInRange =
+                    recipe.calories >= preferences.Calories.min &&
+                    recipe.calories <= preferences.Calories.max;
+
+                  // Return true if both conditions are met
+                  return timeInRange && caloriesInRange;
+                })
+                .map((recipe, index) => (
+                  <Grid
+                    item
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    lg={3}
+                    xl={2}
+                    key={recipe.id}
+                    sx={{
+                      display:
+                        active !== -1 && active !== index ? "none" : "block",
+                    }}
                   >
-                    <MealCard
-                      details={recipe}
-                      matchScore={recipe.score}
-                      tags={recipe.tags ? recipe.tags : []}
-                      index={index}
-                      type={active === index ? "full" : "preview"}
-                      setActive={setActive}
-                    />
-                  </motion.div>
-                </Grid>
-              ))}
+                    <motion.div
+                      initial={{ opacity: 0, y: 50 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                    >
+                      <MealCard
+                        details={recipe}
+                        matchScore={recipe.score}
+                        tags={recipe.tags ? recipe.tags : []}
+                        index={index}
+                        type={active === index ? "full" : "preview"}
+                        setActive={setActive}
+                      />
+                    </motion.div>
+                  </Grid>
+                ))}{" "}
             </Grid>
           )}
         </Box>
