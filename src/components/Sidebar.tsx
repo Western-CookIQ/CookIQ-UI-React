@@ -16,6 +16,7 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import ChatIcon from "@mui/icons-material/Chat";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { GetUserResponse } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
@@ -45,6 +46,7 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
     AccountCircleOutlinedIcon,
     AccountCircleOutlinedIcon,
     Chat,
+    ChatIcon,
   ];
 
   const drawerWidth = 240;

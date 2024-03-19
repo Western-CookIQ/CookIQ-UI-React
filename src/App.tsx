@@ -15,8 +15,8 @@ import {
   RecipeOnboardingPage,
   FeedPage,
   ConnectionPage,
-  ChatPage,
   Profile,
+  ChatPage,
 } from "./pages";
 import AuthenticatedLayout from "./types/AuthenticatedLayout";
 import { AuthProvider } from "./types/AuthContext";

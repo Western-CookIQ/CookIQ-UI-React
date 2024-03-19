@@ -56,7 +56,10 @@ const SignUpPage: React.FC = () => {
 
     if (registerResponse.data) {
       navigate("/confirmation", {
-        state: { Username: registerResponse.data.Username },
+        state: {
+          Username: registerResponse.data.Username,
+          Email: data.get("email") as string,
+        },
       });
     } else if (registerResponse.error) {
       console.error(registerResponse.error);
