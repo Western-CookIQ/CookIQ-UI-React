@@ -5,5 +5,5 @@ export type Post = {
     recipe_id: number,
     rating: number,
     num_likes: number,
-    isLiked: boolean,
+    is_liked: boolean,
   };

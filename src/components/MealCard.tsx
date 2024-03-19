@@ -264,7 +264,7 @@ const MealCard: React.FC<IMealCard> = ({
               pl: 1,
             }}
           >
-            <Typography sx={{ fontSize: "14px", fontWeight: 600 }}>
+            <Typography sx={{ fontSize: "14px", fontWeight: 600}}>
               {details.name.toUpperCase()}
             </Typography>
           </Box>
