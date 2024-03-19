@@ -73,9 +73,7 @@ export const App = () => {
                       path="/recipe-onboarding"
                       element={
                         <ProtectedRoute>
-                          <AuthenticatedLayout>
                             <RecipeOnboardingPage />
-                          </AuthenticatedLayout>
                         </ProtectedRoute>
                       }
                     />
