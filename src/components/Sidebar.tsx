@@ -16,11 +16,12 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import LogoutIcon from '@mui/icons-material/Logout';
+import ChatIcon from "@mui/icons-material/Chat";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { GetUserResponse } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
 import { getUserDetails, logout } from "../api/authenication";
-import { useAuth } from '../types/AuthContext';
+import { useAuth } from "../types/AuthContext";
 
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -42,6 +43,7 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
     BarChartOutlinedIcon,
     AccountCircleOutlinedIcon,
     AccountCircleOutlinedIcon,
+    ChatIcon,
   ];
 
   const drawerWidth = 240;
@@ -76,24 +78,24 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
   };
 
   const LogOut = async () => {
-    const jwtToken = localStorage.getItem('AccessToken');
-  
+    const jwtToken = localStorage.getItem("AccessToken");
+
     if (jwtToken) {
       try {
         const result = await logout(jwtToken);
-  
+
         if (!result.error) {
-          console.log('User logged out successfully');
+          console.log("User logged out successfully");
         } else {
-          console.error('Error logging out:', result.error);
+          console.error("Error logging out:", result.error);
         }
       } catch (error) {
-        console.error('Unexpected error during logout:', error);
+        console.error("Unexpected error during logout:", error);
       }
     } else {
-      console.error('JWT token not found in local storage');
+      console.error("JWT token not found in local storage");
     }
-    localStorage.removeItem('AccessToken');
+    localStorage.removeItem("AccessToken");
     setIsAuthenticated(false);
     navigate("/");
   };
@@ -126,17 +128,18 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
                 mt: 2,
               }}
             />
-            <ListItemButton onClick={() => handleItemClick(`/profile`)}></ListItemButton>
+            <ListItemButton
+              onClick={() => handleItemClick(`/profile`)}
+            ></ListItemButton>
           </ListItem>
           <ListItem sx={{ ml: 1 }}>
             <ListItemText primary={fName + " " + lName} />
-
           </ListItem>
         </List>
 
         <Divider />
         <List>
-          {["Recommendations", "Feed", "Profile", "Connections"].map(
+          {["Recommendations", "Feed", "Profile", "Connections", "Chat"].map(
             (text, index) => (
               <ListItem key={text} disablePadding>
                 <ListItemButton

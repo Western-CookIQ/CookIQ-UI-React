@@ -16,6 +16,7 @@ import {
   FeedPage,
   ConnectionPage,
   Profile,
+  ChatPage,
 } from "./pages";
 import AuthenticatedLayout from "./types/AuthenticatedLayout";
 import { AuthProvider } from "./types/AuthContext";
@@ -124,6 +125,16 @@ export const App = () => {
                         <ProtectedRoute>
                           <AuthenticatedLayout>
                             <Profile />
+                          </AuthenticatedLayout>
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/chat"
+                      element={
+                        <ProtectedRoute>
+                          <AuthenticatedLayout>
+                            <ChatPage />
                           </AuthenticatedLayout>
                         </ProtectedRoute>
                       }

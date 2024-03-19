@@ -8,3 +8,4 @@ export { default as RecommendationPage } from "./RecommendationPage";
 export { default as FeedPage } from "./FeedPage";
 export { default as ConnectionPage } from "./ConnectionPage";
 export { default as Profile } from "./Profile";
+export { default as ChatPage } from "./ChatPage";
