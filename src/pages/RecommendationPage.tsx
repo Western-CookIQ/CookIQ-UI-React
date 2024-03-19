@@ -5,7 +5,6 @@ import {
   IconButton,
   Modal,
   Paper,
-  Slider,
   TextField,
   Typography,
 } from "@mui/material";
@@ -313,10 +312,7 @@ const RecommendationPage: React.FC = () => {
                   <Grid
                     item
                     xs={12}
-                    sm={6}
-                    md={4}
-                    lg={3}
-                    xl={2}
+                    md={3}
                     key={recipe.id}
                     sx={{
                       display:
