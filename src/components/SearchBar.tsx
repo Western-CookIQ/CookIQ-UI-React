@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Button, TextField, Typography, Divider } from "@mui/material";
+import { Box, Button, TextField, Typography, Divider, Avatar } from "@mui/material";
 import { searchUsers } from "../api/authenication";
 import {
   checkFollowingStatus,
@@ -69,6 +69,8 @@ const SearchBar: React.FC = () => {
     }
   }, [searchTerm]);
 
+  console.log(userList)
+
   return (
     <Box
       display="flex"
@@ -107,7 +109,19 @@ const SearchBar: React.FC = () => {
             width: "100%"
           }}
         >
-          <Typography variant="h6" sx={{flex: 1}}>{properCase(user.name)}</Typography>
+          <Box display="flex" alignItems="center">
+            <Avatar
+                alt="Profile Image"
+                src={user.profile_picture}
+                sx={{
+                    width: 50,
+                    height: 50,
+                    backgroundColor: "transparent",
+                    marginRight: "1rem"
+                }}
+            />
+            <Typography variant="h6" sx={{flex: 1}}>{properCase(user.name)}</Typography>
+          </Box>
           <Button
             variant="contained"
             onClick={() => handleFollow(user.sub)}

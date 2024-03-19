@@ -169,7 +169,7 @@ const RecipeOnboardingPage: React.FC = () => {
             }}
           >
             <CardContent
-              style={{ flex: 1, display: "flex", flexDirection: "column" }}
+              style={{ width: "40%", display: "flex", flexDirection: "column" }}
             >
               <div>
                 <Typography variant="h5">
@@ -189,12 +189,12 @@ const RecipeOnboardingPage: React.FC = () => {
                 />
               </div>
             </CardContent>
-            <div style={{ flex: 1, background: "#f0f0f0" }}>
-              <img
-                src={recipe.url}
-                alt=""
-                style={{ width: "auto", height: "40vw" }}
-              />
+            <div style={{ width: "60%", background: "#f0f0f0" }}>
+                <img
+                  src={recipe.url}
+                  alt=""
+                  style={{ width: "auto", height: "40vw" }}
+                />
             </div>
           </Card>
         ))}
