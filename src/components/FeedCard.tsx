@@ -28,6 +28,7 @@ const FeedCard: React.FC<Post & GetUserResponse & RecipeDetailsResponse> = ({ fN
 
     const [isLiked, setIsLiked] = useState<boolean>(prevLiked);
     const [numLikes, setNumLikes] = useState<number>(+prevNumLikes);
+
     const nutrition = [
         {
             label: "Calories",
