@@ -12,13 +12,13 @@ import {
   ForgotPasswordPage,
   RecommendationPage,
   Settings,
-  InitialRecipeReview,
+  RecipeOnboardingPage,
   FeedPage,
   ConnectionPage,
   Profile,
 } from "./pages";
 import AuthenticatedLayout from "./types/AuthenticatedLayout";
-import { AuthProvider } from './types/AuthContext';
+import { AuthProvider } from "./types/AuthContext";
 import ProtectedRoute from "./types/ProtectedRoute";
 
 const theme = createTheme({
@@ -67,14 +67,68 @@ export const App = () => {
               <Route
                 path="/*"
                 element={
-                    <Routes>
-                      <Route path="/InitialRecipeReview" element={<ProtectedRoute><AuthenticatedLayout><InitialRecipeReview /></AuthenticatedLayout></ProtectedRoute>}/>
-                      <Route path="/settings" element={<ProtectedRoute><AuthenticatedLayout><Settings /></AuthenticatedLayout></ProtectedRoute>} />
-                      <Route path="/feed" element={<ProtectedRoute><AuthenticatedLayout><FeedPage /></AuthenticatedLayout></ProtectedRoute>}/>
-                      <Route path="/recommendations" element={<ProtectedRoute><AuthenticatedLayout><RecommendationPage /></AuthenticatedLayout></ProtectedRoute>}/>
-                      <Route path="/connections" element={<ProtectedRoute><AuthenticatedLayout><ConnectionPage /></AuthenticatedLayout></ProtectedRoute>}/>
-                      <Route path="/profile" element={<ProtectedRoute><AuthenticatedLayout><Profile /></AuthenticatedLayout></ProtectedRoute>}/>
-                    </Routes>
+                  <Routes>
+                    <Route
+                      path="/recipe-onboarding"
+                      element={
+                        <ProtectedRoute>
+                          <AuthenticatedLayout>
+                            <RecipeOnboardingPage />
+                          </AuthenticatedLayout>
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/settings"
+                      element={
+                        <ProtectedRoute>
+                          <AuthenticatedLayout>
+                            <Settings />
+                          </AuthenticatedLayout>
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/feed"
+                      element={
+                        <ProtectedRoute>
+                          <AuthenticatedLayout>
+                            <FeedPage />
+                          </AuthenticatedLayout>
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/recommendations"
+                      element={
+                        <ProtectedRoute>
+                          <AuthenticatedLayout>
+                            <RecommendationPage />
+                          </AuthenticatedLayout>
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/connections"
+                      element={
+                        <ProtectedRoute>
+                          <AuthenticatedLayout>
+                            <ConnectionPage />
+                          </AuthenticatedLayout>
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/profile"
+                      element={
+                        <ProtectedRoute>
+                          <AuthenticatedLayout>
+                            <Profile />
+                          </AuthenticatedLayout>
+                        </ProtectedRoute>
+                      }
+                    />
+                  </Routes>
                 }
               />
             </Routes>

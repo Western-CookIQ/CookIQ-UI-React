@@ -19,3 +19,8 @@ export type RecipeDetailsResponse = {
   carbs: number;
   url: string;
 };
+
+export type RecipeTagDetailsResponse = {
+  id: number;
+  tags: string[];
+};

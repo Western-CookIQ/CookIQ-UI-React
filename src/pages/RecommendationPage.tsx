@@ -12,19 +12,29 @@ import { MealCard } from "../components";
 import { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { getRatedMeals } from "../api/meal";
-import { getRecipeDetails } from "../api/recipe";
+import { getRecipeDetails, getRecipeTagDetails } from "../api/recipe";
 import { RecipeRatingResponse } from "../types/MealResponses";
 import { ApiResponse } from "../types/utils";
-import { RecipeDetailsResponse } from "../types/RecipeResponses";
+import {
+  RecipeDetailsResponse,
+  RecipeTagDetailsResponse,
+} from "../types/RecipeResponses";
 import { getCollaborativeBasedRecommendations } from "../api/recommendations";
 import { CollaborativeBasedRecommedationsResponse } from "../types/RecommendationsReponses";
+import { motion } from "framer-motion";
 
-type RecipeDetailsAndMatch = RecipeDetailsResponse & { score: number };
+const loadingGif = `${process.env.PUBLIC_URL}/image/loading.gif`;
+
+type RecipeDetailsAndMatch = RecipeDetailsResponse & {
+  score: number;
+  tags: string[] | undefined;
+};
 
 const RecommendationPage: React.FC = () => {
   const [active, setActive] = useState(-1);
   const [recipes, setRecipes] = useState<RecipeDetailsAndMatch[]>([]);
   const [openCurrentPreferences, setCurrentPreferences] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleClose = () => {
     setCurrentPreferences(false);
@@ -35,7 +45,7 @@ const RecommendationPage: React.FC = () => {
     const fetchData = async () => {
       // get all meals which are rated for the user
       const ratedRecipesResponse: ApiResponse<RecipeRatingResponse[]> =
-        await getRatedMeals(localStorage.getItem("UserSub") as string);
+        await getRatedMeals();
       let ratedRecipesArray: RecipeRatingResponse[] =
         ratedRecipesResponse.data!;
       if (ratedRecipesArray.length === 0) {
@@ -67,6 +77,7 @@ const RecommendationPage: React.FC = () => {
         aggregatedRecommendedRecipes.push(...response.recommendations);
       });
 
+      // get recipe details for each recommendation
       const recommendedRecipesDetailsResponse: ApiResponse<RecipeDetailsResponse>[] =
         await Promise.all(
           aggregatedRecommendedRecipes.map((recommendation) =>
@@ -74,12 +85,32 @@ const RecommendationPage: React.FC = () => {
           )
         );
 
+      const recommendedRecipesTags: RecipeTagDetailsResponse[] =
+        await Promise.all(
+          aggregatedRecommendedRecipes.map(async (recommendation) => {
+            const tagsResponse = await getRecipeTagDetails(recommendation.id);
+            return tagsResponse.data as RecipeTagDetailsResponse;
+          })
+        );
+      // merge all the recommendations into one array
+      let aggregatedRecommendedRecipesTags: { id: number; tags: string[] }[] =
+        [];
+      recommendedRecipesTags.forEach((response) => {
+        if (response === undefined) {
+          return;
+        }
+        aggregatedRecommendedRecipesTags.push(response);
+      });
+
       const recipeDetailsArray: RecipeDetailsAndMatch[] =
         recommendedRecipesDetailsResponse
-          .filter((response) => response.data !== undefined)
-          .map((response) => {
+          .filter((response, i) => response.data !== undefined) // Filter out responses with no data
+          .map((response, i) => {
             return {
               ...response.data!,
+              tags: aggregatedRecommendedRecipesTags.find(
+                (recommendation) => recommendation.id === response.data!.id
+              )!.tags,
               score: aggregatedRecommendedRecipes.find(
                 (recommendation) => recommendation.id === response.data!.id
               )!.score,
@@ -96,8 +127,23 @@ const RecommendationPage: React.FC = () => {
         }
       });
 
-      setRecipes(filteredRecipeDetailsArray);
+      // sort the recipes by score
+      filteredRecipeDetailsArray.sort((a, b) => b.score - a.score);
+
+      // remove any duplicate recipe ids
+      const seen = new Set();
+      const uniqueRecipeDetailsArray = filteredRecipeDetailsArray.filter(
+        (recipe) => {
+          const duplicate = seen.has(recipe.id);
+          seen.add(recipe.id);
+          return !duplicate;
+        }
+      );
+
+      setRecipes(uniqueRecipeDetailsArray);
+      setIsLoading(false);
     };
+    setIsLoading(true);
     fetchData();
   }, []);
 
@@ -168,7 +214,12 @@ const RecommendationPage: React.FC = () => {
             justifyContent: "space-between",
           }}
         >
-          <Typography variant="h5">Recommendations</Typography>
+          <Box>
+            <Typography variant="h5">Recommended Recipes</Typography>
+            <Typography variant="body1" sx={{ opacity: "0.6" }}>
+              Based on your preferences
+            </Typography>
+          </Box>
           <Button
             variant="contained"
             onClick={() => setCurrentPreferences(true)}
@@ -185,28 +236,56 @@ const RecommendationPage: React.FC = () => {
             height: "100%",
           }}
         >
-          <Grid container={active === -1} columnSpacing={4} rowSpacing={1}>
-            {recipes.map((recipe, index) => (
-              <Grid
-                item
-                xs={4}
-                key={index}
-                sx={{
-                  height: "250px",
-                  width: "100%",
-                  display: active !== -1 && active !== index ? "none" : "block",
-                }}
-              >
-                <MealCard
-                  details={recipe}
-                  matchScore={recipe.score}
-                  index={index}
-                  type={active === index ? "full" : "preview"}
-                  setActive={setActive}
-                />
-              </Grid>
-            ))}
-          </Grid>
+          {isLoading ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
+              }}
+            >
+              <img
+                src={loadingGif}
+                alt="loading-gif"
+                style={{ width: 300, height: 250 }}
+              />
+              <Typography variant="body1" sx={{ fontWeight: 600, pt: "-50px" }}>
+                Preparing Recommendations...
+              </Typography>
+            </Box>
+          ) : (
+            <Grid container={active === -1} columnSpacing={4} rowSpacing={1}>
+              {recipes.map((recipe, index) => (
+                <Grid
+                  item
+                  xs={4}
+                  key={index}
+                  sx={{
+                    height: "250px",
+                    width: "100%",
+                    display:
+                      active !== -1 && active !== index ? "none" : "block",
+                  }}
+                >
+                  <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <MealCard
+                      details={recipe}
+                      matchScore={recipe.score}
+                      tags={recipe.tags ? recipe.tags : []}
+                      index={index}
+                      type={active === index ? "full" : "preview"}
+                      setActive={setActive}
+                    />
+                  </motion.div>
+                </Grid>
+              ))}
+            </Grid>
+          )}
         </Box>
       </Box>
     </>
