@@ -1,11 +1,6 @@
 import {
   Box,
-  Button,
   Grid,
-  IconButton,
-  Modal,
-  Paper,
-  Slider,
   Typography,
 } from "@mui/material";
 
