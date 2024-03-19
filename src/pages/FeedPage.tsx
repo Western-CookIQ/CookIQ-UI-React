@@ -33,16 +33,6 @@ const FeedPage: React.FC = () => {
                 ...userInfo.data[0],
                 ...post,
               });
-            } else {
-              posts.push({
-                fName: "Josh",
-                lName: "Rabovsky",
-                email: "joshrabovsky@gmail.com",
-                picture:
-                  "https://wallpapers.com/images/featured-full/picture-en3dnh2zi84sgt3t.jpg",
-                is_public: true,
-                ...post,
-              });
             }
           }
           setFeed(posts);

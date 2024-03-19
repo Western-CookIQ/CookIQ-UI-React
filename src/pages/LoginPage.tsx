@@ -26,6 +26,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { postUser, getUser } from "../api/user";
 import { User } from "../types/UserResponse";
+import { useAuth } from '../types/AuthContext';
 
 const cookIQLogo = `${process.env.PUBLIC_URL}/image/CookIQ_Logo_Text.png`;
 const googleLogo = `${process.env.PUBLIC_URL}/image/googleLogo.png`;
@@ -57,6 +58,7 @@ const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showError, setShowError] = useState(false);
   const navigate = useNavigate();
+  const { setIsAuthenticated } = useAuth();
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -90,11 +92,13 @@ const LoginPage: React.FC = () => {
           // the user does not exist in db
           await postUser(localStorage.getItem("UserSub") as string);
           navigate("/InitialRecipeReview");
+          setIsAuthenticated(true);
         } else {
           // check if the user has completed onboarding
           userDetailsResponse.data?.is_first_login
             ? navigate("/InitialRecipeReview")
             : navigate("/recommendations");
+          setIsAuthenticated(true);
         }
       } catch (error) {
         console.log(`A server side error occured: ${error}`);

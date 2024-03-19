@@ -168,8 +168,6 @@ const Settings: React.FC = () => {
             setEmail(userInfo.data.email);
             setImage(userInfo.data.picture);
           }
-          console.log(userInfo);
-
         } else {
           console.error("JWT token not found in local storage");
         } if(userSub) {
@@ -177,7 +175,6 @@ const Settings: React.FC = () => {
           if (userBools.data) {
             setPublicProfileEnabled(userBools.data.is_public || false);
           }
-          console.log(userBools);
         } else {
           console.error("UserSub not found in local storage");
         }
