@@ -400,7 +400,7 @@ const MealCard: React.FC<IMealCard> = ({
                   Estimated Match
                 </Typography>
                 <Typography variant="body1" color="primary">
-                  {(matchScore * 100).toFixed(1) + "%"}
+                  {matchScore === 0 ? "N/A" : `${(matchScore * 100).toFixed(1)}%`}
                 </Typography>
               </Box>
             </Box>

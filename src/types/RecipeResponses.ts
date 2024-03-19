@@ -24,3 +24,4 @@ export type RecipeTagDetailsResponse = {
   id: number;
   tags: string[];
 };
+
