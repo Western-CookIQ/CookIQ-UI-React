@@ -6,6 +6,7 @@ import {
   } from "@mui/material";
 
 import FeedCard from "../components/FeedCard";
+import SearchBar from "../components/SearchBar";
 
 import { getFeed, getIsPostLiked } from "../api/feed";
 
@@ -54,6 +55,9 @@ const FeedPage: React.FC = () => {
 
     return (
         <Box marginTop="30px" width="100%">
+            <Box display="flex" marginBottom="75px" width="100%">
+                <SearchBar />
+            </Box>
             {isLoading ? (
                 <Box
                     sx={{

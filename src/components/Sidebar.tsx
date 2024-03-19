@@ -42,7 +42,6 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
     AssignmentOutlinedIcon,
     BarChartOutlinedIcon,
     AccountCircleOutlinedIcon,
-    AccountCircleOutlinedIcon,
     ChatIcon,
   ];
 
@@ -139,7 +138,7 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
 
         <Divider />
         <List>
-          {["Recommendations", "Feed", "Profile", "Connections", "Chat"].map(
+          {["Recommendations", "Feed", "Profile", "Chat"].map(
             (text, index) => (
               <ListItem key={text} disablePadding>
                 <ListItemButton
