@@ -17,8 +17,8 @@ import { ColumnContainer } from "../components";
 import { GetUserResponse } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
 import { getUserDetails, updateUserDetails, updateProfileImage, fetchPresignedUrl, uploadFileToS3} from "../api/authenication";
-import { User } from "../types/UserResponse"
-import { getUser } from "../api/user"
+// import { User } from "../types/UserResponse"
+// import { getUser } from "../api/user"
 
 const Settings: React.FC = () => {
   const [fNameEdit, setFNameEdit] = useState(true);
