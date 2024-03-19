@@ -13,6 +13,7 @@ import { RecipeDetailsResponse, RecipeTagDetailsResponse, } from "../types/Recip
 import { motion } from "framer-motion";
 
 const loadingGif = `${process.env.PUBLIC_URL}/image/loading.gif`;
+const bookGif = `${process.env.PUBLIC_URL}/image/notebook.gif`;
 
 type RecipeDetailsAndTags = RecipeDetailsResponse & {
   tags: string[];
@@ -74,16 +75,10 @@ const Profile: React.FC = () => {
       </Box> 
       <Box sx={{
           display: 'flex',
-          flexDirection: 'row',
-          overflowX: 'auto',
           alignItems: 'center',
           justifyContent: "center",
           width: "100%",
           height: "100%",
-          padding: '16px 0',
-          '&::-webkit-scrollbar': {
-            display: 'none',
-          },
         }}>
             {isLoading ? (
               <Box
@@ -113,16 +108,16 @@ const Profile: React.FC = () => {
                 }}
               >
                 <img
-                  src={loadingGif}
-                  alt="loading-gif"
-                  style={{ width: 300, height: 250 }}
+                  src={bookGif}
+                  alt="book-gif"
+                  style={{ width: 200, height: 200 }}
                 />
-                <Typography variant="body1" sx={{ fontWeight: 600, pt: "-50px" }}>
+                <Typography variant="body1" sx={{ marginTop: "15px", fontWeight: 600, pt: "-50px" }}>
                   No Bookmarks Found
                 </Typography>
               </Box>
               ) : ( 
-                <Grid container={active === -1} columnSpacing={4} rowSpacing={1} wrap = "nowrap">
+                <Grid container={active === -1} columnSpacing={4} rowSpacing={1}>
                   {recipes.map((recipe, index) => (
                     <Grid
                       item
@@ -130,27 +125,29 @@ const Profile: React.FC = () => {
                       key={index}
                       sx={{
                         height: "100%",
-                        width: "250px",
-                        display: active !== -1 && active !== index ? "none" : "block",
+                        width: "100%",
+                        marginTop: "15px",
+                        display:
+                          active !== -1 && active !== index ? "none" : "block",
                       }}
                     >
-                    <motion.div
+                      <motion.div
                         initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: index * 0.1 }}
                       >
-                      <MealCard
-                        details={recipe}
-                        matchScore={0}
-                        tags={recipe.tags}
-                        index={index}
-                        type={active === index ? "full" : "preview"}
-                        setActive={setActive}
-                      />
-                    </motion.div>
+                        <MealCard
+                          details={recipe}
+                          matchScore={0}
+                          tags={recipe.tags ? recipe.tags : []}
+                          index={index}
+                          type={active === index ? "full" : "preview"}
+                          setActive={setActive}
+                        />
+                      </motion.div>
                     </Grid>
                   ))}
-                </Grid>
+            </Grid>
               )}
         </Box> 
     </Box>
