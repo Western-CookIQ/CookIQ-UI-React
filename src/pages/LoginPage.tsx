@@ -26,7 +26,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { postUser, getUser } from "../api/user";
 import { User } from "../types/UserResponse";
-import { useAuth } from '../types/AuthContext';
+import { useAuth } from "../types/AuthContext";
 
 const cookIQLogo = `${process.env.PUBLIC_URL}/image/CookIQ_Logo_Text.png`;
 const googleLogo = `${process.env.PUBLIC_URL}/image/googleLogo.png`;
@@ -91,12 +91,12 @@ const LoginPage: React.FC = () => {
         if (userDetailsResponse.error) {
           // the user does not exist in db
           await postUser(localStorage.getItem("UserSub") as string);
-          navigate("/InitialRecipeReview");
+          navigate("/recipe-onboarding");
           setIsAuthenticated(true);
         } else {
           // check if the user has completed onboarding
           userDetailsResponse.data?.is_first_login
-            ? navigate("/InitialRecipeReview")
+            ? navigate("/recipe-onboarding")
             : navigate("/recommendations");
           setIsAuthenticated(true);
         }

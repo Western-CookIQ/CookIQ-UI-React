@@ -134,8 +134,11 @@ const ConfirmationCodePage: React.FC = () => {
           : "Verify Your Email"}
       </Typography>
       <Typography variant="body2" sx={{ mt: 2 }}>
-        We emailed you a six digit email code to {location?.state?.Username}.
-        Enter the code below to confirm your email address.
+        We emailed you a six digit email code to{" "}
+        {type === "password"
+          ? location?.state?.Username
+          : location?.state?.Email}
+        . Enter the code below to confirm your email address.
       </Typography>
       <Box>
         <Box
