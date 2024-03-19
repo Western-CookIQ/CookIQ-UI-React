@@ -12,6 +12,10 @@ interface FollowingStatus {
   [userSub: string]: boolean;
 }
 
+const properCase = (str: string): string => {
+  return str.toLowerCase().replace(/(?:^|\s)\S/g, (char) => char.toUpperCase());
+};
+
 const SearchBar: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [userList, setUserList] = useState<UserPreview[]>([]);
@@ -72,18 +76,19 @@ const SearchBar: React.FC = () => {
       alignItems="left"
       justifyContent="left"
       height="0vh"
+      width="100%"
     >
       <TextField
         fullWidth
-        label="Search"
+        label="Search for Friends to Follow!"
         value={searchTerm}
         onChange={(e) => {
           setSearchTerm(e.target.value);
         }}
         sx={{
-          marginBottom: "1rem",
+          marginBottom: "0.5rem",
           textAlign: "center",
-          width: "100%",
+          width: "120%",
         }}
       />
       {/* Render the list based on the search term */}
@@ -93,21 +98,20 @@ const SearchBar: React.FC = () => {
          bgcolor="white"
           key={index}
           sx={{
-            marginBottom: "1rem",
+            marginBottom: "0.5rem",
             padding: "1rem",
             border: "1px solid #ccc",
             borderRadius: "8px",
             display: "flex",
-            alignItems: "center",
-           justifyContent: "space-between",
-            width: "100%",
+            justifyContent: "space-between",
+            width: "120%"
           }}
         >
-          <Typography variant="h6">{user.name}</Typography>
+          <Typography variant="h6" sx={{flex: 1}}>{properCase(user.name)}</Typography>
           <Button
             variant="contained"
             onClick={() => handleFollow(user.sub)}
-            sx={{ marginLeft: "1rem" }}
+            sx={{ alignItems: "right" }}
           >
             {followingStatus[user.sub] ? "Unfollow" : "Follow"}
           </Button>

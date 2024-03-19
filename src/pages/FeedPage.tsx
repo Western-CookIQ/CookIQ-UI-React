@@ -6,7 +6,6 @@ import {
   } from "@mui/material";
 
 import FeedCard from "../components/FeedCard";
-import ConnectionPage from "../pages/ConnectionPage";
 import SearchBar from "../components/SearchBar";
 
 import { getFeed } from "../api/feed";
@@ -53,10 +52,9 @@ const FeedPage: React.FC = () => {
     return (
         
         <Box display="flex" flexDirection="column">
-            <Box display="flex" >
-            <Typography variant="h6" justifyContent="left" paddingRight={50}>
-                Search for friends!
-            </Typography>
+            <Box display="flex" paddingLeft={40} >
+            {/* <Typography variant="h6" justifyContent="left" paddingRight={50}>
+            </Typography> */}
              <SearchBar />
             </Box>
             
