@@ -24,7 +24,7 @@ function formatUTCDate(d: string){
 
 }
 
-const FeedCard: React.FC<Post & GetUserResponse & RecipeDetailsResponse> = ({ fName: firstName, lName: lastName, name: recipeName, num_likes : prevNumLikes, isLiked: prevLiked, picture: profile_picture, rating, url: recipe_picture, calories, sugar, carbs, fat, sodium, minutes, upload_date_in_utc: upload_date}) => {
+const FeedCard: React.FC<Post & GetUserResponse & RecipeDetailsResponse> = ({ fName: firstName, lName: lastName, name: recipeName, num_likes : prevNumLikes, is_liked: prevLiked, picture: profile_picture, rating, url: recipe_picture, calories, sugar, carbs, fat, sodium, minutes, upload_date_in_utc: upload_date}) => {
 
     const [isLiked, setIsLiked] = useState<boolean>(prevLiked);
     const [numLikes, setNumLikes] = useState<number>(+prevNumLikes);

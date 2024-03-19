@@ -7,7 +7,7 @@ import {
 
 import FeedCard from "../components/FeedCard";
 
-import { getFeed } from "../api/feed";
+import { getFeed, getIsPostLiked } from "../api/feed";
 
 import { Post } from "../types/PostResponses";
 import { RecipeDetailsResponse } from "../types/RecipeResponses"
@@ -33,10 +33,12 @@ const FeedPage: React.FC = () => {
                     }
                     for (let post of sentFeed.data){
                         let userInfo = await getUserBySub(post.user_id)
+                        let postLikeState = await getIsPostLiked(post.id)
                         if(userInfo.data){
                         posts.push({
                             ...userInfo.data[0],
-                            ...post
+                            ...post,
+                            is_liked: postLikeState.data || false
                         })
                         }
                     }
@@ -49,6 +51,8 @@ const FeedPage: React.FC = () => {
         }
         fetchFeed()
     }, [])
+
+    console.log(feed)
 
     return (
         <Box marginTop="30px" width="100%">
