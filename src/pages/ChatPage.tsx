@@ -27,10 +27,10 @@ const ChatPage: React.FC = () => {
       width="100%"
       justifyContent="space-between"
     >
-      <Box>
-        <Typography marginTop="30px" variant="h4">
-          Chat
-        </Typography>
+      <Typography marginTop="30px" variant="h4">
+        Chat
+      </Typography>
+      <Box flexGrow={1} overflow="auto" maxHeight="calc(100vh-100px)">
         <List>
           {messages.map((message, index) => (
             <ListItem key={index}>
