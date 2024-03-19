@@ -17,6 +17,7 @@ import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import ChatIcon from "@mui/icons-material/Chat";
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 import LogoutIcon from "@mui/icons-material/Logout";
 import { GetUserResponse } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
@@ -41,7 +42,7 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
   const icons = [
     AssignmentOutlinedIcon,
     BarChartOutlinedIcon,
-    AccountCircleOutlinedIcon,
+    BookmarkIcon,
     ChatIcon,
   ];
 
@@ -126,9 +127,10 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
                 mb: 0,
                 mt: 2,
               }}
+              onClick={() => handleItemClick(`/settings`)}
             />
             <ListItemButton
-              onClick={() => handleItemClick(`/profile`)}
+              
             ></ListItemButton>
           </ListItem>
           <ListItem sx={{ ml: 1 }}>
@@ -138,7 +140,7 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
 
         <Divider />
         <List>
-          {["Recommendations", "Feed", "Profile", "Chat"].map(
+          {["Recommendations", "Feed", "Bookmarks", "Chat"].map(
             (text, index) => (
               <ListItem key={text} disablePadding>
                 <ListItemButton

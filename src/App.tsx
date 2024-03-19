@@ -120,7 +120,7 @@ export const App = () => {
                       }
                     />
                     <Route
-                      path="/profile"
+                      path="/bookmarks"
                       element={
                         <ProtectedRoute>
                           <AuthenticatedLayout>
