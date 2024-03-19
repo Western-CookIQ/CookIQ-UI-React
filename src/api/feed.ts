@@ -35,6 +35,20 @@ export const getIsPostLiked = async (post_id: number): Promise<
   }
 };
 
+export const changeLikeStatus = async (
+  post_id: number,
+  new_like_status: boolean
+) : Promise<ApiResponse<null>> => {
+    try {
+      const res = await protectedAxios.post(`${url}/api/feed/${post_id}?is_liked=${new_like_status}`);
+      return { data: res.data };
+    } catch (error: unknown) {
+      return {
+        error: error instanceof Error ? error.message : "Unable to post to feed.",
+      };
+    }
+}
+
 // post to a user's feed
 export const postToFeed = async (
   recipe_id: number

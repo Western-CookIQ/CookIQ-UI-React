@@ -52,13 +52,8 @@ const FeedPage: React.FC = () => {
         fetchFeed()
     }, [])
 
-    console.log(feed)
-
     return (
         <Box marginTop="30px" width="100%">
-            <Typography variant="h4">
-                Feed
-            </Typography>
             {isLoading ? (
                 <Box
                     sx={{

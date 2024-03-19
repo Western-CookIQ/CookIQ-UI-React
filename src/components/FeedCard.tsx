@@ -1,10 +1,11 @@
-import { Box, Paper, Typography, Avatar, IconButton } from "@mui/material";
+import { Box, Paper, Typography, Avatar, IconButton, debounce } from "@mui/material";
 import {StarRate, StarHalf, StarRateOutlined, Favorite, FavoriteBorder} from '@mui/icons-material';
 import { useState } from "react";
 
 import { Post } from "../types/PostResponses";
 import { GetUserResponse } from "../types/AuthResponses";
 import { RecipeDetailsResponse } from "../types/RecipeResponses"
+import { changeLikeStatus } from "../api/feed";
 
 function toTitleCase(phrase: string){
     return phrase.replace(/(\w)(\w*)/g, function (_, i, r) {
@@ -24,7 +25,7 @@ function formatUTCDate(d: string){
 
 }
 
-const FeedCard: React.FC<Post & GetUserResponse & RecipeDetailsResponse> = ({ fName: firstName, lName: lastName, name: recipeName, num_likes : prevNumLikes, is_liked: prevLiked, picture: profile_picture, rating, url: recipe_picture, calories, sugar, carbs, fat, sodium, minutes, upload_date_in_utc: upload_date}) => {
+const FeedCard: React.FC<Post & GetUserResponse & RecipeDetailsResponse> = ({ id, fName: firstName, lName: lastName, name: recipeName, num_likes : prevNumLikes, is_liked: prevLiked, picture: profile_picture, rating, url: recipe_picture, calories, sugar, carbs, fat, sodium, minutes, upload_date_in_utc: upload_date}) => {
 
     const [isLiked, setIsLiked] = useState<boolean>(prevLiked);
     const [numLikes, setNumLikes] = useState<number>(+prevNumLikes);
@@ -73,16 +74,16 @@ const FeedCard: React.FC<Post & GetUserResponse & RecipeDetailsResponse> = ({ fN
         stars.push(<StarRateOutlined fontSize="small" style={{color: "orange"}} key={5+i}/>)
     }
 
-    function handleLikeEvent() {
+    const handleLikeEvent = debounce(async function () {
+        await changeLikeStatus(id, !isLiked)
         if (isLiked){
             setNumLikes(numLikes - 1)
-            setIsLiked(false)
         }
         else{
             setNumLikes(numLikes + 1)
-            setIsLiked(true)
         }
-    }
+        setIsLiked(!isLiked)
+    }, 300)
 
     return (
         <Box>
