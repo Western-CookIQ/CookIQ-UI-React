@@ -6,6 +6,7 @@ import {
   Modal,
   Paper,
   Slider,
+  TextField,
   Typography,
 } from "@mui/material";
 import { MealCard } from "../components";
@@ -33,11 +34,11 @@ type RecipeDetailsAndMatch = RecipeDetailsResponse & {
 const RecommendationPage: React.FC = () => {
   const [active, setActive] = useState(-1);
   const [recipes, setRecipes] = useState<RecipeDetailsAndMatch[]>([]);
-  const [openCurrentPreferences, setCurrentPreferences] = useState(false);
+  const [openCurrentPreferences, setOpenCurrentPreferences] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const handleClose = () => {
-    setCurrentPreferences(false);
+    setOpenCurrentPreferences(false);
   };
 
   // RECOMMENDATION CALL
@@ -147,20 +148,27 @@ const RecommendationPage: React.FC = () => {
     fetchData();
   }, []);
 
-  const [values, setValues] = useState({
-    property1: [20, 50],
-    property2: [30, 70],
-    property3: [10, 90],
+  type Values = {
+    [property: string]: { min: number; max: number };
+  };
+
+  const [preferences, setPreferences] = useState<Values>({
+    Carlories: { min: 0, max: 100 },
+    Time: { min: 0, max: 100 },
   });
 
-  const handleSliderChange = (
-    property: string,
-    newValue: number | number[]
-  ) => {
-    setValues({
-      ...values,
-      [property]: newValue,
-    });
+  const handleMinChange = (property: string, value: number) => {
+    setPreferences((prevValues) => ({
+      ...prevValues,
+      [property]: { ...prevValues[property], min: value },
+    }));
+  };
+
+  const handleMaxChange = (property: string, value: number) => {
+    setPreferences((prevValues) => ({
+      ...prevValues,
+      [property]: { ...prevValues[property], max: value },
+    }));
   };
 
   return (
@@ -189,19 +197,49 @@ const RecommendationPage: React.FC = () => {
                 <CloseIcon />
               </IconButton>
               <Typography variant="h5">Preferences</Typography>
-              {Object.keys(values).map((property) => (
+              {Object.keys(preferences).map((property) => (
                 <Box key={property} sx={{ width: 300 }}>
                   <Typography id="range-slider" gutterBottom>
                     {property}
                   </Typography>
-                  <Slider
-                    value={values[property as keyof typeof values]}
-                    onChange={(event, newValue) =>
-                      handleSliderChange(property, newValue)
-                    }
-                    valueLabelDisplay="auto"
-                    aria-labelledby="range-slider"
-                  />
+                  <Box
+                    sx={{ display: "flex", gap: "10px", marginBottom: "30px" }}
+                  >
+                    <TextField
+                      label="Min"
+                      sx={{ flexGrow: 1 }}
+                      type="number"
+                      value={
+                        preferences[property as keyof typeof preferences].min
+                      }
+                      onChange={(event) =>
+                        handleMinChange(property, Number(event.target.value))
+                      }
+                      InputProps={{
+                        inputProps: {
+                          min: 0,
+                          max: 100, // Adjust these values as needed
+                        },
+                      }}
+                    />
+                    <TextField
+                      label="Max"
+                      sx={{ flexGrow: 1 }}
+                      type="number"
+                      value={
+                        preferences[property as keyof typeof preferences].max
+                      }
+                      onChange={(event) =>
+                        handleMaxChange(property, Number(event.target.value))
+                      }
+                      InputProps={{
+                        inputProps: {
+                          min: 0,
+                          max: 100, // Adjust these values as needed
+                        },
+                      }}
+                    />
+                  </Box>
                 </Box>
               ))}
             </Paper>
@@ -222,7 +260,7 @@ const RecommendationPage: React.FC = () => {
           </Box>
           <Button
             variant="contained"
-            onClick={() => setCurrentPreferences(true)}
+            onClick={() => setOpenCurrentPreferences(true)}
           >
             Update Preferences
           </Button>
