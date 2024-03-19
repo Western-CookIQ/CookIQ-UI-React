@@ -38,6 +38,7 @@ export type GetUserResponse = {
 export type UserPreview = {
   sub: string;
   name: string;
+  profile_picture: string;
 };
 
 export type SearchUserResponse = {
