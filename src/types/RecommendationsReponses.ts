@@ -8,3 +8,7 @@ export type CollaborativeBasedRecommedationsResponse = {
     score: number;
   }[];
 };
+
+export type Chat = {
+  response: string;
+};

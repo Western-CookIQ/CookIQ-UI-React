@@ -9,6 +9,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useState } from "react";
+import { getChat } from "../api/recommendations";
 
 const ChatPage: React.FC = () => {
   const [message, setMessage] = useState("");
@@ -19,11 +20,8 @@ const ChatPage: React.FC = () => {
   const handleSend = async () => {
     setIsLoading(true);
     setMessages([...messages, message]);
-    const res = await fetch(
-      `https://a85qb0exbe.execute-api.us-east-2.amazonaws.com/dev/llm?query=${message}`
-    );
-    const data = await res.json();
-    setResponse(data.response);
+    const res = await getChat(message);
+    setResponse(res.data?.response ? res.data?.response : "");
     setIsLoading(false);
   };
 
