@@ -49,7 +49,7 @@ const ChatPage: React.FC = () => {
           ))}
         </List>
       </Box>
-      <Box display="flex" gap="10px" alignItems="center">
+      <Box display="flex" gap="10px" alignItems="center" marginBottom={2}>
         <Box flexGrow={4}>
           <TextField
             fullWidth
