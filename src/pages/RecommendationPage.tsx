@@ -12,7 +12,7 @@ import { MealCard } from "../components";
 import { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { getRatedMeals } from "../api/meal";
-import { getRecipeDetails, getRecipeTagDetails, getRecipeRecommendations } from "../api/recipe";
+import { getRecipeRecommendations } from "../api/recipe";
 import { RecipeRatingResponse } from "../types/MealResponses";
 import { ApiResponse } from "../types/utils";
 import {
@@ -77,14 +77,12 @@ const RecommendationPage: React.FC = () => {
         aggregatedRecommendedRecipes.push(...response.recommendations);
       });
 
-      const recipeRecommendations: (RecipeDetailsResponse & RecipeTagDetailsResponse)[] = 
-        await Promise.all(
-          aggregatedRecommendedRecipes.map(async (recommendation) => {
-            return (await getRecipeRecommendations(recommendation.id)).data!
-          }
-          )
-        );
-      
+      const recipeRecommendations: (RecipeDetailsResponse &
+        RecipeTagDetailsResponse)[] = await Promise.all(
+        aggregatedRecommendedRecipes.map(async (recommendation) => {
+          return (await getRecipeRecommendations(recommendation.id)).data!;
+        })
+      );
 
       // // get recipe details for each recommendation
       // const recommendedRecipesDetailsResponse: ApiResponse<RecipeDetailsResponse>[] =
@@ -111,17 +109,16 @@ const RecommendationPage: React.FC = () => {
       //   aggregatedRecommendedRecipesTags.push(response);
       // });
 
-      const recipeDetailsArray: RecipeDetailsAndMatch[] =
-          recipeRecommendations
-          .filter((response, _) => response !== undefined) // Filter out responses with no data
-          .map((response, _) => {
-            return {
-              ...response,
-              score: aggregatedRecommendedRecipes.find(
-                (recommendation) => recommendation.id === response.id
-              )!.score,
-            };
-          });
+      const recipeDetailsArray: RecipeDetailsAndMatch[] = recipeRecommendations
+        .filter((response, _) => response !== undefined) // Filter out responses with no data
+        .map((response, _) => {
+          return {
+            ...response,
+            score: aggregatedRecommendedRecipes.find(
+              (recommendation) => recommendation.id === response.id
+            )!.score,
+          };
+        });
 
       // Drop any recomendations that fails this JSON.parse(details.steps.replace(/'/g, '"')) check
       const filteredRecipeDetailsArray = recipeDetailsArray.filter((recipe) => {
