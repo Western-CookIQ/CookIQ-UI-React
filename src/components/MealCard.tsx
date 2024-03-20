@@ -11,11 +11,12 @@ import { useEffect, useState } from "react";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import StarIcon from '@mui/icons-material/Star';
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import { RecipeDetailsResponse } from "../types/RecipeResponses";
 import { postToFeed } from "../api/feed";
 import CloseIcon from "@mui/icons-material/Close";
-import { styled } from "@mui/system";
+
 import {
   postMealRating,
   getRatedMealsByRecipeId,
@@ -30,13 +31,6 @@ interface IMealCard {
   matchScore: number;
   tags: string[];
 }
-
-const DashedOutlineButton = styled(Button)(({ theme }) => ({
-  border: "1px dashed black",
-  borderRadius: theme.shape.borderRadius, // You can adjust the border radius to your preference
-  padding: theme.spacing(0.5, 1), // Adjust padding as needed to make the button smaller
-  color: "black",
-}));
 
 const MealCard: React.FC<IMealCard> = ({
   type,
@@ -83,15 +77,15 @@ const MealCard: React.FC<IMealCard> = ({
     if (rating === null) {
       return;
     }
-
     const recipe_id = details.id;
     const cookStatus = true;
 
-    await postMealRating(recipe_id, rating, cookStatus);
+    await postMealRating( recipe_id, rating, cookStatus);
     await postToFeed(recipe_id);
 
     setOpenRating(false);
     setIsCooked(cookStatus);
+    setRating(rating);
   };
 
   useEffect(() => {
@@ -101,6 +95,7 @@ const MealCard: React.FC<IMealCard> = ({
       if (res.data) {
         setIsCooked(res.data.is_cooked);
         setIsBookmarked(res.data.is_bookmarked);
+        setRating(res.data.rating)
       }
     };
     fetchInitalState();
@@ -141,11 +136,11 @@ const MealCard: React.FC<IMealCard> = ({
             >
               <CloseIcon />
             </IconButton>
-            <Typography sx={{ fontSize: "18px", fontWeight: 600 }}>
-              Congratulations!
+            <Typography sx={{ paddingX: "20px", fontSize: "18px", fontWeight: 600 }}>
+              Rate This Recipe
             </Typography>
             <Typography variant="body1" color="initial">
-              Please rate your experience.
+              
             </Typography>
             <Box
               sx={{
@@ -319,21 +314,7 @@ const MealCard: React.FC<IMealCard> = ({
             alignItems: "center",
           }}
         >
-          <Box sx={{ width: "30vw", height: "90vh" }}>
-            <Box
-              onClick={() => {
-                setActive(-1);
-              }}
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                cursor: "pointer",
-              }}
-            >
-              <ArrowBackIcon sx={{ fontSize: "15px" }} />
-              <Typography variant="body1">Back</Typography>
-            </Box>
+          <Box sx={{ width: "40vw", height: "90vh" }}>
             <Box
               sx={{
                 display: "flex",
@@ -342,23 +323,41 @@ const MealCard: React.FC<IMealCard> = ({
                 my: 2,
               }}
             >
-              <DashedOutlineButton
-                onClick={handleCookedEvent}
-                disabled={isCooked}
+              <Box
+                onClick={() => {
+                  setActive(-1);
+                }}
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
               >
-                Cooked
-              </DashedOutlineButton>
+                <Button variant="outlined" startIcon={<ArrowBackIcon />} sx={{ color: '#000000' }}>Back</Button>
+              </Box>
               <IconButton onClick={() => handleBookmarkEvent(isBookmarked)}>
                 {isBookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
               </IconButton>
             </Box>
-            <Typography variant="h4" color="initial">
-              {details.name}
+            <Typography variant="h4" color="initial" fontWeight="bold">
+              {details.name.replace(/\b(\w)/g, char => char.toUpperCase())}
             </Typography>
             <Typography variant="body1" color="initial" sx={{ mt: 2 }}>
-              Chief's Comment: {details.description}
+              {'"' + details.description.replace(/(?:^|\.\s+|\bi\b)(.)/g, (match) => match.toUpperCase()) + '"'}
             </Typography>
-
+            
+            <Box marginTop="15px">
+              <Button
+                onClick={handleCookedEvent}
+                disabled={isCooked}
+                variant="outlined"
+                endIcon={<StarIcon />}
+                sx={{ color: '#000000'}}
+                >
+                Rate
+              </Button>
+            </Box>
             <Box
               sx={{
                 display: "flex",
@@ -373,7 +372,7 @@ const MealCard: React.FC<IMealCard> = ({
                   color="initial"
                   sx={{ fontWeight: "bold" }}
                 >
-                  Cook Time
+                  Cook Time:
                 </Typography>
                 <Typography variant="body1" color="initial">
                   {details.minutes} minute(s)
@@ -385,7 +384,7 @@ const MealCard: React.FC<IMealCard> = ({
                   color="initial"
                   sx={{ fontWeight: "bold" }}
                 >
-                  Calories
+                  Calories:
                 </Typography>
                 <Typography variant="body1" color="initial">
                   {Number(details.calories).toFixed(0)}
@@ -397,7 +396,7 @@ const MealCard: React.FC<IMealCard> = ({
                   color="initial"
                   sx={{ fontWeight: "bold" }}
                 >
-                  Estimated Match
+                  Estimated Match:
                 </Typography>
                 <Typography variant="body1" color="primary">
                   {matchScore === 0 ? "N/A" : `${(matchScore * 100).toFixed(1)}%`}
@@ -408,7 +407,7 @@ const MealCard: React.FC<IMealCard> = ({
               <img
                 src={details.url}
                 alt="recipe"
-                style={{ width: "20vw", height: "auto" }}
+                style={{ width: "40vw", height: "auto" }}
               />
             </Box>
             <Typography
@@ -416,7 +415,7 @@ const MealCard: React.FC<IMealCard> = ({
               color="initial"
               sx={{ fontWeight: "bold", mt: 3 }}
             >
-              Instructions
+              Directions
             </Typography>
             <ol>
               {JSON.parse(details.steps.replace(/'/g, '"')).map(

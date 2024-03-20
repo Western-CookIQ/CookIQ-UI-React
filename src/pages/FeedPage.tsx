@@ -73,7 +73,7 @@ const FeedPage: React.FC = () => {
                     style={{ width: 300, height: 250 }}
                     />
                     <Typography variant="body1" sx={{ fontWeight: 600, pt: "-50px" }}>
-                    Preparing Recommendations...
+                    Preparing Feed...
                     </Typography>
                 </Box>
             ) : (
