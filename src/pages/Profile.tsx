@@ -67,9 +67,9 @@ const Profile: React.FC = () => {
   }, []);
 
   return (
-    <Box marginTop="30px" width="100%">
-      <Box sx={{ display: active !== -1 ? "none" : "flex", mb:"30px"}}>
-        <Typography variant="h4">
+    <Box width="100%">
+      <Box sx={{ display: active !== -1 ? "none" : "flex"}}>
+        <Typography variant="h4" marginTop="30px">
           Bookmarks
         </Typography> 
       </Box> 
