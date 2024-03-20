@@ -138,20 +138,16 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
 
         <Divider />
         <List>
-          {["Recommendations", "Feed", "Profile", "Chat"].map(
-            (text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton
-                  onClick={() => handleItemClick(`/${text.toLowerCase()}`)}
-                >
-                  <ListItemIcon>
-                    {React.createElement(icons[index])}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            )
-          )}
+          {["Recommendations", "Feed", "Profile", "Chat"].map((text, index) => (
+            <ListItem key={text} disablePadding>
+              <ListItemButton
+                onClick={() => handleItemClick(`/${text.toLowerCase()}`)}
+              >
+                <ListItemIcon>{React.createElement(icons[index])}</ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
         </List>
         <Divider sx={{ marginTop: "auto" }} />
         <List>

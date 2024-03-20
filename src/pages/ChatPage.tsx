@@ -6,16 +6,25 @@ import {
   List,
   ListItem,
   Avatar,
+  CircularProgress,
 } from "@mui/material";
 import { useState } from "react";
 
 const ChatPage: React.FC = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<string[]>([]);
+  const [response, setResponse] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSend = () => {
-    setMessages((prevMessages) => [...prevMessages, message]);
-    setMessage("");
+  const handleSend = async () => {
+    setIsLoading(true);
+    setMessages([...messages, message]);
+    const res = await fetch(
+      `https://a85qb0exbe.execute-api.us-east-2.amazonaws.com/dev/llm?query=${message}`
+    );
+    const data = await res.json();
+    setResponse(data.response);
+    setIsLoading(false);
   };
 
   return (
@@ -27,7 +36,7 @@ const ChatPage: React.FC = () => {
       justifyContent="space-between"
     >
       <Typography marginTop="30px" variant="h4">
-        Chat
+        Question Bot
       </Typography>
       <Box flexGrow={1} overflow="auto" maxHeight="calc(100vh-100px)">
         <List>
@@ -47,6 +56,29 @@ const ChatPage: React.FC = () => {
               </Box>
             </ListItem>
           ))}
+          {isLoading ? (
+            <ListItem
+              key={2}
+              sx={{ display: "flex", justifyContent: "flex-end" }}
+            >
+              <Box padding="10px" bgcolor="lightgray" borderRadius="10px">
+                <CircularProgress />
+              </Box>
+            </ListItem>
+          ) : (
+            response && (
+              <ListItem
+                key={2}
+                sx={{ display: "flex", justifyContent: "flex-end" }}
+              >
+                <Box padding="10px" bgcolor="lightgray" borderRadius="10px">
+                  <Typography variant="body1" noWrap={false}>
+                    {response}
+                  </Typography>
+                </Box>
+              </ListItem>
+            )
+          )}
         </List>
       </Box>
       <Box display="flex" gap="10px" alignItems="center">
