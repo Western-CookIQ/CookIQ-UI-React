@@ -20,7 +20,12 @@ const ChatPage: React.FC = () => {
     setIsLoading(true);
     setMessages([...messages, message]);
     const res = await fetch(
-      `https://a85qb0exbe.execute-api.us-east-2.amazonaws.com/dev/llm?query=${message}`
+      `https://a85qb0exbe.execute-api.us-east-2.amazonaws.com/dev/llm?query=${message}`,
+      {
+        "headers": {
+          "Access-Control-Allow-Origin": "*"
+        }
+      }
     );
     const data = await res.json();
     setResponse(data.response);
