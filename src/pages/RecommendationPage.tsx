@@ -5,7 +5,7 @@ import {
   IconButton,
   Modal,
   Paper,
-  Slider,
+  TextField,
   Typography,
 } from "@mui/material";
 import { MealCard } from "../components";
@@ -33,11 +33,11 @@ type RecipeDetailsAndMatch = RecipeDetailsResponse & {
 const RecommendationPage: React.FC = () => {
   const [active, setActive] = useState(-1);
   const [recipes, setRecipes] = useState<RecipeDetailsAndMatch[]>([]);
-  const [openCurrentPreferences, setCurrentPreferences] = useState(false);
+  const [openCurrentPreferences, setOpenCurrentPreferences] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const handleClose = () => {
-    setCurrentPreferences(false);
+    setOpenCurrentPreferences(false);
   };
 
   // RECOMMENDATION CALL
@@ -147,20 +147,27 @@ const RecommendationPage: React.FC = () => {
     fetchData();
   }, []);
 
-  const [values, setValues] = useState({
-    property1: [20, 50],
-    property2: [30, 70],
-    property3: [10, 90],
+  type Values = {
+    [property: string]: { min: number; max: number };
+  };
+
+  const [preferences, setPreferences] = useState<Values>({
+    Calories: { min: 0, max: 10000 },
+    Time: { min: 0, max: 120 },
   });
 
-  const handleSliderChange = (
-    property: string,
-    newValue: number | number[]
-  ) => {
-    setValues({
-      ...values,
-      [property]: newValue,
-    });
+  const handleMinChange = (property: string, value: number) => {
+    setPreferences((prevValues) => ({
+      ...prevValues,
+      [property]: { ...prevValues[property], min: value },
+    }));
+  };
+
+  const handleMaxChange = (property: string, value: number) => {
+    setPreferences((prevValues) => ({
+      ...prevValues,
+      [property]: { ...prevValues[property], max: value },
+    }));
   };
 
   return (
@@ -189,19 +196,49 @@ const RecommendationPage: React.FC = () => {
                 <CloseIcon />
               </IconButton>
               <Typography variant="h5">Preferences</Typography>
-              {Object.keys(values).map((property) => (
+              {Object.keys(preferences).map((property) => (
                 <Box key={property} sx={{ width: 300 }}>
                   <Typography id="range-slider" gutterBottom>
                     {property}
                   </Typography>
-                  <Slider
-                    value={values[property as keyof typeof values]}
-                    onChange={(event, newValue) =>
-                      handleSliderChange(property, newValue)
-                    }
-                    valueLabelDisplay="auto"
-                    aria-labelledby="range-slider"
-                  />
+                  <Box
+                    sx={{ display: "flex", gap: "10px", marginBottom: "30px" }}
+                  >
+                    <TextField
+                      label="Min"
+                      sx={{ flexGrow: 1 }}
+                      type="number"
+                      value={
+                        preferences[property as keyof typeof preferences].min
+                      }
+                      onChange={(event) =>
+                        handleMinChange(property, Number(event.target.value))
+                      }
+                      InputProps={{
+                        inputProps: {
+                          min: 0,
+                          max: 100, // Adjust these values as needed
+                        },
+                      }}
+                    />
+                    <TextField
+                      label="Max"
+                      sx={{ flexGrow: 1 }}
+                      type="number"
+                      value={
+                        preferences[property as keyof typeof preferences].max
+                      }
+                      onChange={(event) =>
+                        handleMaxChange(property, Number(event.target.value))
+                      }
+                      InputProps={{
+                        inputProps: {
+                          min: 0,
+                          max: 100, // Adjust these values as needed
+                        },
+                      }}
+                    />
+                  </Box>
                 </Box>
               ))}
             </Paper>
@@ -222,7 +259,7 @@ const RecommendationPage: React.FC = () => {
           </Box>
           <Button
             variant="contained"
-            onClick={() => setCurrentPreferences(true)}
+            onClick={() => setOpenCurrentPreferences(true)}
           >
             Update Preferences
           </Button>
@@ -256,34 +293,48 @@ const RecommendationPage: React.FC = () => {
             </Box>
           ) : (
             <Grid container={active === -1} columnSpacing={4} rowSpacing={1}>
-              {recipes.map((recipe, index) => (
-                <Grid
-                  item
-                  xs={4}
-                  key={index}
-                  sx={{
-                    height: "250px",
-                    width: "100%",
-                    display:
-                      active !== -1 && active !== index ? "none" : "block",
-                  }}
-                >
-                  <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
+              {recipes
+                .filter((recipe) => {
+                  // Check if the recipe's time is within the min and max values
+                  const timeInRange =
+                    recipe.minutes >= preferences.Time.min &&
+                    recipe.minutes <= preferences.Time.max;
+
+                  // Check if the recipe's calories are within the min and max values
+                  const caloriesInRange =
+                    recipe.calories >= preferences.Calories.min &&
+                    recipe.calories <= preferences.Calories.max;
+
+                  // Return true if both conditions are met
+                  return timeInRange && caloriesInRange;
+                })
+                .map((recipe, index) => (
+                  <Grid
+                    item
+                    xs={12}
+                    md={3}
+                    key={recipe.id}
+                    sx={{
+                      display:
+                        active !== -1 && active !== index ? "none" : "block",
+                    }}
                   >
-                    <MealCard
-                      details={recipe}
-                      matchScore={recipe.score}
-                      tags={recipe.tags ? recipe.tags : []}
-                      index={index}
-                      type={active === index ? "full" : "preview"}
-                      setActive={setActive}
-                    />
-                  </motion.div>
-                </Grid>
-              ))}
+                    <motion.div
+                      initial={{ opacity: 0, y: 50 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                    >
+                      <MealCard
+                        details={recipe}
+                        matchScore={recipe.score}
+                        tags={recipe.tags ? recipe.tags : []}
+                        index={index}
+                        type={active === index ? "full" : "preview"}
+                        setActive={setActive}
+                      />
+                    </motion.div>
+                  </Grid>
+                ))}{" "}
             </Grid>
           )}
         </Box>

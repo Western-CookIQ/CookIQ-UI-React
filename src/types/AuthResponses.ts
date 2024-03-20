@@ -32,12 +32,13 @@ export type GetUserResponse = {
   fName: string;
   lName: string;
   picture: string;
-  is_public: boolean;
+  is_public: string;
 };
 
 export type UserPreview = {
   sub: string;
   name: string;
+  profile_picture: string;
 };
 
 export type SearchUserResponse = {

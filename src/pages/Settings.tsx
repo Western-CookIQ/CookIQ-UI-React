@@ -17,8 +17,6 @@ import { ColumnContainer } from "../components";
 import { GetUserResponse } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
 import { getUserDetails, updateUserDetails, updateProfileImage, fetchPresignedUrl, uploadFileToS3} from "../api/authenication";
-import { User } from "../types/UserResponse"
-import { getUser, updateUserSettings } from "../api/user"
 
 const Settings: React.FC = () => {
   const [fNameEdit, setFNameEdit] = useState(true);
@@ -136,20 +134,21 @@ const Settings: React.FC = () => {
     setPublicProfileEnabled(event.target.checked);
 
     if (userSub) {
-      const updatedFields: Partial<User> = {
-        is_first_login: false,
+      const updatedFields: Partial<GetUserResponse> = {
         is_public: event.target.checked,
       };
-      const result = await updateUserSettings(userSub, updatedFields);
-
-      if (!result.error) {
-        console.log('User updated successfully:', result.data);
-      } else {
-        setPublicProfileEnabled(!event.target.checked);
-        console.error('Error updating user:', result.error);
+      const accessToken = localStorage.getItem("AccessToken");
+      if (accessToken && updatedFields){
+          const result = await updateUserDetails(accessToken, updatedFields);
+          if (!result.error) {
+            console.log('User updated successfully:', result.data);
+          } else {
+            setPublicProfileEnabled(!event.target.checked);
+            console.error('Error updating user:', result.error);
+          }
+      }else {
+        console.error('JWT token not found in local storage');
       }
-    } else {
-      console.error('JWT token not found in local storage');
     }
   };
 
@@ -157,26 +156,18 @@ const Settings: React.FC = () => {
     const fetchData = async () => {
       try {
         const jwtToken = localStorage.getItem("AccessToken");
-        const userSub = localStorage.getItem("UserSub");
 
         if (jwtToken) {
-          const userInfo: ApiResponse<GetUserResponse> = await getUserDetails(jwtToken);
-          
+          const userInfo: ApiResponse<GetUserResponse> = await getUserDetails(jwtToken);          
           if (userInfo.data) {
             setFName(userInfo.data.fName);
             setLName(userInfo.data.lName);
             setEmail(userInfo.data.email);
             setImage(userInfo.data.picture);
+            setPublicProfileEnabled(userInfo.data.is_public === 'true')
           }
         } else {
           console.error("JWT token not found in local storage");
-        } if(userSub) {
-          const userBools: ApiResponse<User> = await getUser(userSub);
-          if (userBools.data) {
-            setPublicProfileEnabled(userBools.data.is_public || false);
-          }
-        } else {
-          console.error("UserSub not found in local storage");
         }
       } catch (error) {
         // Handle errors
@@ -310,63 +301,6 @@ const Settings: React.FC = () => {
             fullWidth
           ></TextField>
         </Container>
-        {/*
-        {passwordEdit ? (
-          <Container sx={{ display: "flex", alignItems: "center" }}>
-            <TextField
-              margin="normal"
-              label="Password"
-              variant="standard"
-              defaultValue="Joe123"
-              fullWidth
-              type="password"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-            <Button
-              variant="text"
-              onClick={handlePasswordChange}
-              sx={{ color: "black", ml: 2 }}
-            >
-              {passwordEdit ? "Edit" : "Save"}
-            </Button>
-          </Container>
-        ) : (
-          <Container
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              flexDirection: "column",
-            }}
-          >
-            <TextField
-              margin="normal"
-              id="standard-required"
-              label="Password"
-              variant="standard"
-              fullWidth
-              type="password"
-            />
-            <TextField
-              margin="normal"
-              id="standard-required"
-              label="Confirm Password"
-              variant="standard"
-              fullWidth
-              type="password"
-            />
-            <Button
-              variant="text"
-              onClick={handlePasswordChange}
-              sx={{ color: "black", ml: 2 }}
-            >
-              {passwordEdit ? "Edit" : "Save"}
-            </Button>
-          </Container>
-        )}
-        */}
-
         <FormGroup sx={{ alignItems: "center", mt: 2, mb: 2 }}>
           <FormControlLabel
             control={<Switch checked={publicProfileEnabled} onChange={handleSwitchChange} />}

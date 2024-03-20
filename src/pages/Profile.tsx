@@ -12,6 +12,9 @@ import { getRecipeTagDetails } from "../api/recipe";
 import { RecipeDetailsResponse, RecipeTagDetailsResponse, } from "../types/RecipeResponses";
 import { motion } from "framer-motion";
 
+const loadingGif = `${process.env.PUBLIC_URL}/image/loading.gif`;
+const bookGif = `${process.env.PUBLIC_URL}/image/notebook.gif`;
+
 type RecipeDetailsAndTags = RecipeDetailsResponse & {
   tags: string[];
 };
@@ -19,6 +22,8 @@ type RecipeDetailsAndTags = RecipeDetailsResponse & {
 const Profile: React.FC = () => {
   const [active, setActive] = useState(-1);
   const [recipes, setRecipes] = useState<RecipeDetailsAndTags[]>([]);
+  const [isLoading, setisLoading] = useState(true);
+  const [isEmpty, setisEmpty] = useState(true);
 
   // RECOMMENDATION CALL
   useEffect(() => {
@@ -29,9 +34,11 @@ const Profile: React.FC = () => {
       let bookmarkedArray: RecipeDetailsResponse[] =
         bookmarkedResponse.data!;
       if (bookmarkedArray.length === 0) {
+        setisEmpty(true);
+        setisLoading(false);
         return;
       }
-
+      setisEmpty(false);
       const recipeTags: RecipeTagDetailsResponse[] =
         await Promise.all(
           bookmarkedArray.map(async (recommendation) => {
@@ -51,9 +58,11 @@ const Profile: React.FC = () => {
               )!.tags,
             };
           });
-
+      
+      setisLoading(false);
       setRecipes(recipeDetailsArray);
     };
+    setisLoading(true);
     fetchData();
   }, []);
 
@@ -66,51 +75,80 @@ const Profile: React.FC = () => {
       </Box> 
       <Box sx={{
           display: 'flex',
-          flexDirection: 'row',
-          overflowX: 'auto',
           alignItems: 'center',
-          
-          padding: '16px 0',
-          '&::-webkit-scrollbar': {
-            display: 'none',
-          },
+          justifyContent: "center",
+          width: "100%",
+          height: "100%",
         }}>
-        <Box
-            sx={{
-              display: 'flex',
-              justifyContent: active === -1 ? 'flex-start' : 'center'
-            }}
-          >
-            <Grid container={active === -1} columnSpacing={4} rowSpacing={1} wrap = "nowrap">
-              {recipes.map((recipe, index) => (
-                <Grid
-                  item
-                  xs={4}
-                  key={index}
-                  sx={{
-                    height: "100%",
-                    minWidth: "250px",
-                    display: active !== -1 && active !== index ? "none" : "block",
-                  }}
-                >
-                <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                  >
-                  <MealCard
-                    details={recipe}
-                    matchScore={0}
-                    tags={recipe.tags}
-                    index={index}
-                    type={active === index ? "full" : "preview"}
-                    setActive={setActive}
-                  />
-                </motion.div>
-                </Grid>
-              ))}
+            {isLoading ? (
+              <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
+              }}
+            >
+              <img
+                src={loadingGif}
+                alt="loading-gif"
+                style={{ width: 300, height: 250 }}
+              />
+              <Typography variant="body1" sx={{ fontWeight: 600, pt: "-50px" }}>
+                Flipping Pages...
+              </Typography>
+            </Box>
+            ) : isEmpty ? (
+                <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <img
+                  src={bookGif}
+                  alt="book-gif"
+                  style={{ width: 200, height: 200 }}
+                />
+                <Typography variant="body1" sx={{ marginTop: "15px", fontWeight: 600, pt: "-50px" }}>
+                  No Bookmarks Found
+                </Typography>
+              </Box>
+              ) : ( 
+                <Grid container={active === -1} columnSpacing={4} rowSpacing={1}>
+                  {recipes.map((recipe, index) => (
+                    <Grid
+                      item
+                      xs={4}
+                      key={index}
+                      sx={{
+                        height: "100%",
+                        width: "100%",
+                        marginTop: "15px",
+                        display:
+                          active !== -1 && active !== index ? "none" : "block",
+                      }}
+                    >
+                      <motion.div
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                      >
+                        <MealCard
+                          details={recipe}
+                          matchScore={0}
+                          tags={recipe.tags ? recipe.tags : []}
+                          index={index}
+                          type={active === index ? "full" : "preview"}
+                          setActive={setActive}
+                        />
+                      </motion.div>
+                    </Grid>
+                  ))}
             </Grid>
-          </Box>
+              )}
         </Box> 
     </Box>
   );
