@@ -12,7 +12,7 @@ import { MealCard } from "../components";
 import { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { getRatedMeals } from "../api/meal";
-import { getRecipeDetails, getRecipeTagDetails } from "../api/recipe";
+import { getRecipeDetails, getRecipeTagDetails, getRecipeRecommendations } from "../api/recipe";
 import { RecipeRatingResponse } from "../types/MealResponses";
 import { ApiResponse } from "../types/utils";
 import {
@@ -77,42 +77,48 @@ const RecommendationPage: React.FC = () => {
         aggregatedRecommendedRecipes.push(...response.recommendations);
       });
 
-      // get recipe details for each recommendation
-      const recommendedRecipesDetailsResponse: ApiResponse<RecipeDetailsResponse>[] =
-        await Promise.all(
-          aggregatedRecommendedRecipes.map((recommendation) =>
-            getRecipeDetails(recommendation.id)
-          )
-        );
-
-      const recommendedRecipesTags: RecipeTagDetailsResponse[] =
+      const recipeRecommendations: (RecipeDetailsResponse & RecipeTagDetailsResponse)[] = 
         await Promise.all(
           aggregatedRecommendedRecipes.map(async (recommendation) => {
-            const tagsResponse = await getRecipeTagDetails(recommendation.id);
-            return tagsResponse.data as RecipeTagDetailsResponse;
-          })
+            return (await getRecipeRecommendations(recommendation.id)).data!
+          }
+          )
         );
-      // merge all the recommendations into one array
-      let aggregatedRecommendedRecipesTags: { id: number; tags: string[] }[] =
-        [];
-      recommendedRecipesTags.forEach((response) => {
-        if (response === undefined) {
-          return;
-        }
-        aggregatedRecommendedRecipesTags.push(response);
-      });
+      
+
+      // // get recipe details for each recommendation
+      // const recommendedRecipesDetailsResponse: ApiResponse<RecipeDetailsResponse>[] =
+      //   await Promise.all(
+      //     aggregatedRecommendedRecipes.map((recommendation) =>
+      //       getRecipeDetails(recommendation.id)
+      //     )
+      //   );
+
+      // const recommendedRecipesTags: RecipeTagDetailsResponse[] =
+      //   await Promise.all(
+      //     aggregatedRecommendedRecipes.map(async (recommendation) => {
+      //       const tagsResponse = await getRecipeTagDetails(recommendation.id);
+      //       return tagsResponse.data as RecipeTagDetailsResponse;
+      //     })
+      //   );
+      // // merge all the recommendations into one array
+      // let aggregatedRecommendedRecipesTags: { id: number; tags: string[] }[] =
+      //   [];
+      // recommendedRecipesTags.forEach((response) => {
+      //   if (response === undefined) {
+      //     return;
+      //   }
+      //   aggregatedRecommendedRecipesTags.push(response);
+      // });
 
       const recipeDetailsArray: RecipeDetailsAndMatch[] =
-        recommendedRecipesDetailsResponse
-          .filter((response, i) => response.data !== undefined) // Filter out responses with no data
-          .map((response, i) => {
+          recipeRecommendations
+          .filter((response, _) => response !== undefined) // Filter out responses with no data
+          .map((response, _) => {
             return {
-              ...response.data!,
-              tags: aggregatedRecommendedRecipesTags.find(
-                (recommendation) => recommendation.id === response.data!.id
-              )!.tags,
+              ...response,
               score: aggregatedRecommendedRecipes.find(
-                (recommendation) => recommendation.id === response.data!.id
+                (recommendation) => recommendation.id === response.id
               )!.score,
             };
           });
@@ -312,7 +318,7 @@ const RecommendationPage: React.FC = () => {
                   <Grid
                     item
                     xs={12}
-                    md={3}
+                    md={4}
                     key={recipe.id}
                     sx={{
                       display:

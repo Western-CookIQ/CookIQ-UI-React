@@ -39,6 +39,21 @@ export const getRecipeDetails = async (
   }
 };
 
+// GET: recipe details
+export const getRecipeRecommendations = async (
+  id: number
+): Promise<ApiResponse<RecipeDetailsResponse & RecipeTagDetailsResponse>> => {
+  try {
+    const res = await protectedAxios.get(`${url}/api/recipe/recommendation-recipe/${id}`);
+    return { data: res.data };
+  } catch (error: unknown) {
+    return {
+      error:
+        error instanceof Error ? error.message : "Unable to register user.",
+    };
+  }
+}
+
 // GET: recipe tag details
 export const getRecipeTagDetails = async (
   recipeId: number
