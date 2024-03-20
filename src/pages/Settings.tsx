@@ -17,8 +17,6 @@ import { ColumnContainer } from "../components";
 import { GetUserResponse } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
 import { getUserDetails, updateUserDetails, updateProfileImage, fetchPresignedUrl, uploadFileToS3} from "../api/authenication";
-import { User } from "../types/UserResponse"
-import { getUser } from "../api/user"
 
 const Settings: React.FC = () => {
   const [fNameEdit, setFNameEdit] = useState(true);
@@ -303,63 +301,6 @@ const Settings: React.FC = () => {
             fullWidth
           ></TextField>
         </Container>
-        {/*
-        {passwordEdit ? (
-          <Container sx={{ display: "flex", alignItems: "center" }}>
-            <TextField
-              margin="normal"
-              label="Password"
-              variant="standard"
-              defaultValue="Joe123"
-              fullWidth
-              type="password"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-            <Button
-              variant="text"
-              onClick={handlePasswordChange}
-              sx={{ color: "black", ml: 2 }}
-            >
-              {passwordEdit ? "Edit" : "Save"}
-            </Button>
-          </Container>
-        ) : (
-          <Container
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              flexDirection: "column",
-            }}
-          >
-            <TextField
-              margin="normal"
-              id="standard-required"
-              label="Password"
-              variant="standard"
-              fullWidth
-              type="password"
-            />
-            <TextField
-              margin="normal"
-              id="standard-required"
-              label="Confirm Password"
-              variant="standard"
-              fullWidth
-              type="password"
-            />
-            <Button
-              variant="text"
-              onClick={handlePasswordChange}
-              sx={{ color: "black", ml: 2 }}
-            >
-              {passwordEdit ? "Edit" : "Save"}
-            </Button>
-          </Container>
-        )}
-        */}
-
         <FormGroup sx={{ alignItems: "center", mt: 2, mb: 2 }}>
           <FormControlLabel
             control={<Switch checked={publicProfileEnabled} onChange={handleSwitchChange} />}
