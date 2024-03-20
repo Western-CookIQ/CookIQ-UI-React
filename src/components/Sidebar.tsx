@@ -16,7 +16,7 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import ChatIcon from "@mui/icons-material/Chat";
-import BookmarkIcon from '@mui/icons-material/Bookmark';
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { GetUserResponse } from "../types/AuthResponses";
 import { ApiResponse } from "../types/utils";
@@ -128,9 +128,7 @@ const Sidebar: React.FC<ISidebar> = ({ children }) => {
               }}
               onClick={() => handleItemClick(`/settings`)}
             />
-            <ListItemButton
-              
-            ></ListItemButton>
+            <ListItemButton></ListItemButton>
           </ListItem>
           <ListItem sx={{ ml: 1 }}>
             <ListItemText primary={fName + " " + lName} />
